@@ -1,0 +1,7 @@
+<ul>
+<%= for result <- @results do %>
+  <li>
+    <%= link result.title, to: Routes.anime_path(@conn, :show, @locale, result.mal_id) %>
+  </li>
+<% end %>
+</ul>

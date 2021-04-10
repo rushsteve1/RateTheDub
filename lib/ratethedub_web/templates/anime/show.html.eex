@@ -1,0 +1,40 @@
+<h1>Show Anime series</h1>
+
+<ul>
+
+  <li>
+    <strong>Mal:</strong>
+    <%= @series.mal_id %>
+  </li>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @series.title %>
+  </li>
+
+  <li>
+      <strong>Votes:</strong>
+      <%= @count %>
+  </li>
+
+  <li>
+    <strong>Dubbed in:</strong>
+    <ul>
+    <%= for lang <- @series.dubbed_in do %>
+        <li><%= lang %></li>
+    <% end %>
+    </ul>
+  </li>
+
+  <li>
+    <strong>Featured in:</strong>
+    <%= @series.featured_in %>
+  </li>
+
+  <%= button "Vote Up", to: Routes.anime_path(@conn, :vote, @locale, @series.mal_id), method: :post %>
+
+  <pre>
+    <%= inspect @all_counts %>
+  </pre>
+
+</ul>
