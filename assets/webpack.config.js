@@ -1,9 +1,7 @@
 const path = require('path');
 const glob = require('glob');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, options) => {
@@ -12,10 +10,10 @@ module.exports = (env, options) => {
   return {
     optimization: {
       minimizer: [
-        new TerserPlugin({ cache: true, parallel: true, sourceMap: devMode }),
-        new OptimizeCSSAssetsPlugin({})
+        new CssMinimizerPlugin()
       ]
     },
+    devtool: devMode ? 'source-map' : undefined,
     entry: {
       'app': glob.sync('./vendor/**/*.js').concat(['./js/app.js'])
     },
@@ -39,15 +37,18 @@ module.exports = (env, options) => {
           use: [
             MiniCssExtractPlugin.loader,
             'css-loader',
-            'sass-loader',
+            'postcss-loader',
           ],
         }
       ]
     },
     plugins: [
       new MiniCssExtractPlugin({ filename: '../css/app.css' }),
-      new CopyWebpackPlugin([{ from: 'static/', to: '../' }])
+      new CopyWebpackPlugin({
+        patterns: [
+          {from: 'static/', to: '../' }
+        ]
+      })
     ]
-    .concat(devMode ? [new HardSourceWebpackPlugin()] : [])
   }
 };
