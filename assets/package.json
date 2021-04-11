@@ -24,6 +24,8 @@
     "hard-source-webpack-plugin": "^0.13.1",
     "mini-css-extract-plugin": "^1.4.1",
     "postcss-loader": "^5.2.0",
+    "prettier": "^2.2.1",
+    "prettier-plugin-eex": "^0.4.0",
     "tailwindcss": "^2.1.1",
     "terser-webpack-plugin": "^5.1.1",
     "webpack": "^5.31.2",

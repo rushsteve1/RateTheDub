@@ -1,1 +1,17 @@
-<h1><%= gettext "About" %></h1>
+<article>
+  <h1><%= gettext "About" %></h1>
+
+  <p>Words go here that are about this site</p>
+
+  <h2 id="contact"><%= gettext "Contact" %></h2>
+  <p></p>
+
+  <h2 id="feedback"><%= gettext "Feedback" %></h2>
+  <p></p>
+
+  <h3><%= gettext "Database Changes" %></h3>
+  <p></p>
+
+  <h2 id="donate"><%= gettext "Donate" %></h2>
+  <p></p>
+</article>

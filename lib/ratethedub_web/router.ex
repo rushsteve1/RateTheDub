@@ -29,8 +29,9 @@ defmodule RateTheDubWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/anime/:id", AnimeController, :show
+    get "/about", PageController, :about
 
+    get "/anime/:id", AnimeController, :show
     post "/anime/:id/vote", AnimeController, :vote
 
     get "/search", SearchController, :index

@@ -1,1 +1,7 @@
-hello
+<section class="flex flex-row flex-wrap justify-evenly">
+  <h2><%= gettext "Featured" %></h2>
+
+  <h2><%= gettext "Trending" %></h2>
+
+  <h2><%= gettext "Top Rated" %></h2>
+</section>

@@ -9,8 +9,8 @@ defmodule RateTheDub.Jikan do
   alias RateTheDub.Anime.AnimeSeries
 
   plug Tesla.Middleware.BaseUrl, "https://api.jikan.moe/v3"
-  plug Tesla.Middleware.Logger, debug: false
   plug Tesla.Middleware.FollowRedirects
+  plug Tesla.Middleware.Logger, debug: false
   plug RateTheDub.EtagCache
   plug Tesla.Middleware.JSON
 
@@ -46,7 +46,7 @@ defmodule RateTheDub.Jikan do
   @spec search!(terms :: String.t()) :: Map.t()
   def search!(terms) when is_binary(terms) do
     get!("/search/anime", query: [q: terms, page: 1, limit: 10]).body
-    |> Map.get("results")
+    |> Map.get("results", [])
     |> Enum.map(&jikan_to_series/1)
   end
 

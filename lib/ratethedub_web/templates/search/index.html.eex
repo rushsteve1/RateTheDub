@@ -1,7 +1,14 @@
 <ul>
-<%= for result <- @results do %>
-  <li>
-    <%= link result.title, to: Routes.anime_path(@conn, :show, @locale, result.mal_id) %>
-  </li>
-<% end %>
+  <%= for result <- @results do %>
+    <a href="<%= Routes.anime_path(@conn, :show, @locale, result.mal_id) %>">
+      <li class="list-series-item">
+        <img
+          src="<%= result.poster_url %>"
+          title="<%= result.title %>"
+          class="inline-block max-h-full"
+        />
+        <%= result.title %>
+      </li>
+    </a>
+  <% end %>
 </ul>

@@ -2,7 +2,6 @@ defmodule RateTheDubWeb.AnimeController do
   use RateTheDubWeb, :controller
 
   alias RateTheDub.Anime
-  alias RateTheDub.Anime.AnimeSeries
   alias RateTheDub.DubVotes
 
   def show(conn, %{"id" => id}) do

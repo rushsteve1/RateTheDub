@@ -6,7 +6,7 @@ module.exports = {
     "../**/live/**/*.ex",
     "./js/**/*.js",
   ],
-  darkMode: 'media', // or 'media' or 'class'
+  darkMode: "media", // or 'media' or 'class'
   theme: {
     extend: {},
   },
@@ -14,4 +14,4 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}
+};

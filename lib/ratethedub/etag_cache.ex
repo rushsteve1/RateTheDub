@@ -10,7 +10,7 @@ defmodule RateTheDub.EtagCache do
   use GenServer
   require Logger
 
-  @impl true
+  @impl Tesla.Middleware
   def call(env, next, _) do
     if env.method == :get do
       etag = GenServer.call(__MODULE__, {:lookup_url, env.url})
@@ -34,7 +34,7 @@ defmodule RateTheDub.EtagCache do
             {:ok, Map.put(env, :body, GenServer.call(__MODULE__, {:lookup_etag, etag}))}
 
           _ ->
-            Logger.error("Did not get 200 or 304 status code in EtagsCache")
+            {:ok, env}
         end
       else
         error -> error
@@ -48,7 +48,7 @@ defmodule RateTheDub.EtagCache do
     GenServer.start_link(__MODULE__, :ok, opts)
   end
 
-  @impl true
+  @impl GenServer
   def init(:ok) do
     {:ok,
      %{
@@ -57,19 +57,19 @@ defmodule RateTheDub.EtagCache do
      }}
   end
 
-  @impl true
+  @impl GenServer
   def handle_call({:lookup_url, url}, _, t) do
     {_, etag} = :ets.lookup(t.url_table, url) |> List.first() || {nil, nil}
     {:reply, etag, t}
   end
 
-  @impl true
+  @impl GenServer
   def handle_call({:lookup_etag, etag}, _, t) do
     {_, res} = :ets.lookup(t.etag_table, etag) |> List.first() || {nil, nil}
     {:reply, res, t}
   end
 
-  @impl true
+  @impl GenServer
   def handle_cast({:set, url, etag, res}, t) do
     :ets.insert(t.url_table, {url, etag})
     :ets.insert(t.etag_table, {etag, res})

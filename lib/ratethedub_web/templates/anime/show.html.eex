@@ -1,11 +1,14 @@
-<h1>Show Anime series</h1>
+<img src="<%= @series.poster_url %>" />
 
 <ul>
-
   <li>
     <strong>Mal:</strong>
     <%= @series.mal_id %>
   </li>
+
+  <a href="https://myanimelist.net/anime/<%= @series.mal_id %>" target="_blank">
+    View on MyAnimeList
+  </a>
 
   <li>
     <strong>Title:</strong>
@@ -13,16 +16,16 @@
   </li>
 
   <li>
-      <strong>Votes:</strong>
-      <%= @count %>
+    <strong>Votes:</strong>
+    <%= @count %>
   </li>
 
   <li>
     <strong>Dubbed in:</strong>
     <ul>
-    <%= for lang <- @series.dubbed_in do %>
+      <%= for lang <- @series.dubbed_in do %>
         <li><%= lang %></li>
-    <% end %>
+      <% end %>
     </ul>
   </li>
 
@@ -36,5 +39,4 @@
   <pre>
     <%= inspect @all_counts %>
   </pre>
-
 </ul>
