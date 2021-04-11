@@ -13,7 +13,7 @@ defmodule RateTheDub.EtagCache do
   @impl Tesla.Middleware
   def call(env, next, _) do
     if env.method == :get do
-      etag = GenServer.call(__MODULE__, {:lookup_url, env.url})
+      {_, etag} = :ets.lookup(:url_etag, env.url) |> List.first() || {nil, nil}
 
       env =
         if etag do
@@ -31,7 +31,8 @@ defmodule RateTheDub.EtagCache do
 
           304 ->
             Logger.info("Serving cached request for #{env.url}")
-            {:ok, Map.put(env, :body, GenServer.call(__MODULE__, {:lookup_etag, etag}))}
+            {_, res} = :ets.lookup(:etag_res, etag) |> List.first() || {nil, nil}
+            {:ok, Map.put(env, :body, res)}
 
           _ ->
             {:ok, env}
@@ -50,29 +51,15 @@ defmodule RateTheDub.EtagCache do
 
   @impl GenServer
   def init(:ok) do
-    {:ok,
-     %{
-       url_table: :ets.new(:url_etag, [:set, :private, read_concurrency: true]),
-       etag_table: :ets.new(:etag_res, [:set, :private, read_concurrency: true])
-     }}
+    :ets.new(:url_etag, [:set, :protected, :named_table, read_concurrency: true])
+    :ets.new(:etag_res, [:set, :protected, :named_table, read_concurrency: true])
+    {:ok, nil}
   end
 
   @impl GenServer
-  def handle_call({:lookup_url, url}, _, t) do
-    {_, etag} = :ets.lookup(t.url_table, url) |> List.first() || {nil, nil}
-    {:reply, etag, t}
-  end
-
-  @impl GenServer
-  def handle_call({:lookup_etag, etag}, _, t) do
-    {_, res} = :ets.lookup(t.etag_table, etag) |> List.first() || {nil, nil}
-    {:reply, res, t}
-  end
-
-  @impl GenServer
-  def handle_cast({:set, url, etag, res}, t) do
-    :ets.insert(t.url_table, {url, etag})
-    :ets.insert(t.etag_table, {etag, res})
-    {:noreply, t}
+  def handle_cast({:set, url, etag, res}, _) do
+    :ets.insert(:url_etag, {url, etag})
+    :ets.insert(:etag_res, {etag, res})
+    {:noreply, nil}
   end
 end

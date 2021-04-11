@@ -1,18 +1,20 @@
 defmodule RateTheDub.Jikan do
   @moduledoc """
   Fetches information from the Jikan.moe API for MyAnimeList.
+
   It is important to cache information from the API to be a good user and not hit
-  it too hard. This will also make RateTheDub faster too!
+  JIkan too hard. This will also make RateTheDub faster too!
   """
 
   use Tesla
   alias RateTheDub.Anime.AnimeSeries
 
   plug Tesla.Middleware.BaseUrl, "https://api.jikan.moe/v3"
+  plug Tesla.Middleware.Timeout, timeout: 2_000
   plug Tesla.Middleware.FollowRedirects
   plug Tesla.Middleware.Logger, debug: false
   plug RateTheDub.EtagCache
-  plug Tesla.Middleware.JSON
+  plug Tesla.Middleware.DecodeJson
 
   @doc """
   Returns the JSON data of an Anime Series from Jikan parsed into Elixir
