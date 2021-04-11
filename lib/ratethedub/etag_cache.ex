@@ -11,38 +11,43 @@ defmodule RateTheDub.EtagCache do
   require Logger
 
   @impl Tesla.Middleware
-  def call(env, next, _) do
-    if env.method == :get do
-      {_, etag} = :ets.lookup(:url_etag, env.url) |> List.first() || {nil, nil}
+  def call(%{method: :get} = env, next, _) do
+    env
+    |> set_etag()
+    |> Tesla.run(next)
+    |> process_resp()
+  end
 
-      env =
-        if etag do
-          Tesla.put_header(env, "If-None-Match", etag)
-        else
-          env
-        end
+  @impl Tesla.Middleware
+  def call(env, next, _), do: Tesla.run(env, next)
 
-      with {:ok, env} <- Tesla.run(env, next) do
-        case env.status do
-          200 ->
-            etag = Tesla.get_header(env, "etag")
-            GenServer.cast(__MODULE__, {:set, env.url, etag, env.body})
-            {:ok, env}
+  defp set_etag(env) do
+    case :ets.lookup(:url_etag, env.url) do
+      [{_, etag}] ->
+        Tesla.put_header(env, "If-None-Match", etag)
 
-          304 ->
-            Logger.info("Serving cached request for #{env.url}")
-            {_, res} = :ets.lookup(:etag_res, etag) |> List.first() || {nil, nil}
-            {:ok, Map.put(env, :body, res)}
-
-          _ ->
-            {:ok, env}
-        end
-      else
-        error -> error
-      end
-    else
-      Tesla.run(env, next)
+      _ ->
+        env
     end
+  end
+
+  defp process_resp({:error, _} = error), do: error
+
+  defp process_resp({:ok, %{status: 200} = env}) do
+    etag = Tesla.get_header(env, "etag")
+    GenServer.cast(__MODULE__, {:set, env.url, etag, env.body})
+    {:ok, env}
+  end
+
+  defp process_resp({:ok, %{status: 304} = env}) do
+    etag = Tesla.get_header(env, "etag")
+    Logger.info("Serving cached request for #{env.url}")
+    {_, res} = :ets.lookup(:etag_res, etag) |> List.first() || {nil, nil}
+    {:ok, Map.put(env, :body, res)}
+  end
+
+  defp process_resp({:ok, _} = resp) do
+    resp
   end
 
   def start_link(opts) do
