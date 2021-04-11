@@ -1,4 +1,8 @@
-# RateTheDub
+# [RateTheDub](https://ratethedub.com)
+
+Was the dub for that anime any good? 
+
+---
 
 To start your Phoenix server:
 
