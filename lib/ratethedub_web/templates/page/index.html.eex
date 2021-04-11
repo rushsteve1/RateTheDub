@@ -1,7 +1,56 @@
 <section class="flex flex-row flex-wrap justify-evenly">
-  <h2><%= gettext "Featured" %></h2>
+  <section>
+    <h2><%= gettext "Featured" %></h2>
+    <ul>
+      <%= for anime <- @featured do %>
+        <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
+          <li class="list-series-item w-80">
+            <img
+              src="<%= anime.poster_url %>"
+              title="<%= anime.title %>"
+              class="inline-block max-h-full"
+            />
+            <%= anime.title %>
+          </li>
+        </a>
+      <% end %>
+    </ul>
+  </section>
 
-  <h2><%= gettext "Trending" %></h2>
+  <section>
+    <h2><%= gettext "Trending" %></h2>
+    <ul>
+      <%= for anime <- @trending do %>
+        <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
+          <li class="list-series-item w-80">
+            <img
+              src="<%= anime.poster_url %>"
+              title="<%= anime.title %>"
+              class="inline-block max-h-full"
+            />
+            <%= anime.title %>
+          </li>
+        </a>
+      <% end %>
+    </ul>
+  </section>
 
-  <h2><%= gettext "Top Rated" %></h2>
+  <section>
+    <h2><%= gettext "Top Rated" %></h2>
+    <ul>
+      <%= for [anime, count] <- @top_rated do %>
+        <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
+          <li class="list-series-item w-80">
+            <img
+              src="<%= anime.poster_url %>"
+              title="<%= anime.title %>"
+              class="inline-block max-h-full"
+            />
+            <%= anime.title %>
+            <span class="bold"><%= count %></span>
+          </li>
+        </a>
+      <% end %>
+    </ul>
+  </section>
 </section>

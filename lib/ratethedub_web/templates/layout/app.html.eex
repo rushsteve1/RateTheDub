@@ -46,6 +46,13 @@
     </main>
 
     <footer class="flex flex-row justify-end">
+      <select name="locale">
+        <%= for loc <- Gettext.known_locales(RateTheDubWeb.Gettext) do %>
+          <option value="<%= loc %>">
+            <%= loc %>
+          </option>
+        <% end %>
+      </select>
       <p class="mx-4">
         <%= gettext "Data provided by" %>
         <a href="https://jikan.moe">Jikan</a>

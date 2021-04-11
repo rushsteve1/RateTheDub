@@ -12,6 +12,11 @@ defmodule RateTheDub.Anime.AnimeSeries do
     field :title, :string
     field :title_tr, :map
 
+    has_many :votes,
+             RateTheDub.DubVotes.Vote,
+             foreign_key: :mal_id,
+             references: :mal_id
+
     timestamps()
   end
 
@@ -19,7 +24,7 @@ defmodule RateTheDub.Anime.AnimeSeries do
   def changeset(anime_series, attrs) do
     anime_series
     |> cast(attrs, [:mal_id, :title, :title_tr, :dubbed_in, :streaming, :featured_in])
-    |> validate_required([:mal_id, :title, :title_tr, :dubbed_in, :streaming, :featured_in])
+    |> validate_required([:mal_id, :title, :dubbed_in])
     |> unique_constraint(:title)
   end
 end

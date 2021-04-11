@@ -120,4 +120,20 @@ defmodule RateTheDub.Anime do
   def change_anime_series(%AnimeSeries{} = anime_series, attrs \\ %{}) do
     AnimeSeries.changeset(anime_series, attrs)
   end
+
+  @doc """
+  Gets the top 5 series that are featured in this language
+
+  ## Examples
+
+      iex> featured_by_lang("en")
+      [%AnimeSeries{}, ...]
+
+  """
+  def featured_by_lang(lang) do
+    AnimeSeries
+    |> where(featured_in: ^lang)
+    |> limit(5)
+    |> Repo.all()
+  end
 end

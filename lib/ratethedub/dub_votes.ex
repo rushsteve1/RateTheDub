@@ -43,7 +43,7 @@ defmodule RateTheDub.DubVotes do
   ## Examples
 
       iex> count_votes_for(1, "en")
-      10
+      5
 
   """
   def count_votes_for(id, lang) do
@@ -55,6 +55,12 @@ defmodule RateTheDub.DubVotes do
 
   @doc """
   Gets the number of votes for each language for this anime series.
+
+  ## Examples
+
+      iex> count_all_votes_for(1)
+      %{"en" => 5, "fr" => 1}
+
   """
   def count_all_votes_for(id) do
     Vote
@@ -129,5 +135,19 @@ defmodule RateTheDub.DubVotes do
   """
   def change_vote(%Vote{} = vote, attrs \\ %{}) do
     Vote.changeset(vote, attrs)
+  end
+
+  @doc """
+  Gets the top 5 series with the most votes for the given language in descending
+  order.
+  """
+  def top_rated_by_lang(lang) do
+    Vote
+    |> select([v], [v.mal_id, count(v)])
+    |> where(language: ^lang)
+    |> group_by(:mal_id)
+    |> limit(5)
+    |> Repo.all()
+    |> Enum.map(fn [id, count] -> [RateTheDub.Anime.get_anime_series!(id), count] end)
   end
 end
