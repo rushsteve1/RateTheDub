@@ -146,8 +146,17 @@ defmodule RateTheDub.DubVotes do
     |> select([v], [v.mal_id, count(v)])
     |> where(language: ^lang)
     |> group_by(:mal_id)
+    |> order_by(desc: :count)
     |> limit(5)
     |> Repo.all()
     |> Enum.map(fn [id, count] -> [RateTheDub.Anime.get_anime_series!(id), count] end)
+  end
+
+  def has_voted_for(id, lang, ip, snow) do
+    Vote
+    |> where(mal_id: ^id)
+    |> where(language: ^lang)
+    |> where([v], v.user_ip == ^ip or v.user_snowflake == ^snow)
+    |> Repo.exists?()
   end
 end

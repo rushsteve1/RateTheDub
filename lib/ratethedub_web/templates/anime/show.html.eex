@@ -34,7 +34,11 @@
     <%= @series.featured_in %>
   </li>
 
-  <%= button "Vote Up", to: Routes.anime_path(@conn, :vote, @locale, @series.mal_id), method: :post %>
+  <%= if @has_voted do %>
+    <p>You've already voted for this</p>
+  <% else %>
+    <%= button "Vote Up", to: Routes.anime_path(@conn, :vote, @locale, @series.mal_id), method: :post %>
+  <% end %>
 
   <pre>
     <%= inspect @all_counts %>
