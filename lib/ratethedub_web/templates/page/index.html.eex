@@ -1,6 +1,10 @@
-<section class="flex flex-row flex-wrap justify-evenly">
+<div id="jumbo" class="text-4xl text-center my-8">
+  <%= gettext("Was the %{lang} dub for that anime any good?", lang: @locale) %>
+</div>
+
+<section class="grid grid-cols-1 md:grid-cols-3 grid-rows-1">
   <section>
-    <h2><%= gettext "Featured" %></h2>
+    <h2 class="text-center"><%= gettext "Featured" %></h2>
     <ul>
       <%= for anime <- @featured do %>
         <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
@@ -18,7 +22,7 @@
   </section>
 
   <section>
-    <h2><%= gettext "Trending" %></h2>
+    <h2 class="text-center"><%= gettext "Trending" %></h2>
     <ul>
       <%= for anime <- @trending do %>
         <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
@@ -36,7 +40,7 @@
   </section>
 
   <section>
-    <h2><%= gettext "Top Rated" %></h2>
+    <h2 class="text-center"><%= gettext "Top Rated" %></h2>
     <ul>
       <%= for [anime, count] <- @top_rated do %>
         <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">

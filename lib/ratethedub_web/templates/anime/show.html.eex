@@ -1,46 +1,57 @@
-<img src="<%= @series.poster_url %>" />
+<article class="flex flex-row flex-wrap justify-center space-x-2">
+  <section>
+    <img src="<%= @series.poster_url %>" />
+    <a
+      href="https://myanimelist.net/anime/<%= @series.mal_id %>"
+      target="_blank"
+      class=""
+    >
+      View on MyAnimeList
+    </a>
+  </section>
 
-<ul>
-  <li>
-    <strong>Mal:</strong>
-    <%= @series.mal_id %>
-  </li>
+  <section class="flex-grow">
+    <div class="text-center text-4xl">
+      <div>
+        <%= gettext "Is the" %>
+        <span><%= @locale %></span>
+        <%= gettext "dub for" %>
+      </div>
+      <div><%= @series.title %></div>
+      <div>
+        <%= gettext "any good?" %>
+      </div>
+    </div>
 
-  <a href="https://myanimelist.net/anime/<%= @series.mal_id %>" target="_blank">
-    View on MyAnimeList
-  </a>
-
-  <li>
-    <strong>Title:</strong>
-    <%= @series.title %>
-  </li>
-
-  <li>
-    <strong>Votes:</strong>
-    <%= @count %>
-  </li>
-
-  <li>
-    <strong>Dubbed in:</strong>
-    <ul>
-      <%= for lang <- @series.dubbed_in do %>
-        <li><%= lang %></li>
+    <div class="text-center text-2xl my-4">
+      <%= if @count > 0 do %>
+        <%= gettext "%{count} people think so", count: @count %>
+      <% else %>
+        <%= gettext "No one has voted for this yet..." %>
       <% end %>
-    </ul>
-  </li>
+    </div>
 
-  <li>
-    <strong>Featured in:</strong>
-    <%= @series.featured_in %>
-  </li>
+    <%= if @series.featured_in == @locale do %>
+      <%= gettext "This dub is featured!" %>
+    <% end %>
 
-  <%= if @has_voted do %>
-    <p>You've already voted for this</p>
-  <% else %>
-    <%= button "Vote Up", to: Routes.anime_path(@conn, :vote, @locale, @series.mal_id), method: :post %>
-  <% end %>
+    <div
+      class="w-full md:w-max mx-auto p-2 bg-blue-400 border-2 border-blue-600 shadow hover:shadow-md"
+    >
+      <%= if @has_voted do %>
+        <span class="cursor-not-allowed">You've already voted</span>
+      <% else %>
+        <%= button "Vote Up", to: Routes.anime_path(@conn, :vote, @locale, @series.mal_id), method: :post %>
+      <% end %>
+    </div>
 
-  <pre>
-    <%= inspect @all_counts %>
-  </pre>
-</ul>
+    <div>
+      <h3><%= gettext "This series is also dubbed in..." %></h3>
+      <ul>
+        <%= for lang <- @series.dubbed_in do %>
+          <li><%= lang %> -> <%= Map.get(@all_counts, lang, 0) %></li>
+        <% end %>
+      </ul>
+    </div>
+  </section>
+</article>

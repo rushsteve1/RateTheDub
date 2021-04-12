@@ -7,7 +7,7 @@ defmodule RateTheDubWeb.SearchController do
 
     conn =
       if terms == "" do
-        put_flash(conn, :error, "You have to actually search for something")
+        put_flash(conn, :error, gettext("You have to actually search for something"))
       else
         conn
       end

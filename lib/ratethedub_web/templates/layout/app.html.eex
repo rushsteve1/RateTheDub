@@ -27,7 +27,7 @@
 
       <section class="inline align-middle">
         <%= form_for @conn, Routes.search_path(@conn, :index, @locale), [name: :search, method: :get], fn f -> %>
-          <%= text_input f, :q, value: assigns[:q], class: "p-1" %>
+          <%= text_input f, :q, value: assigns[:q], placeholder: gettext("Search"), class: "w-full md:w-96 p-1" %>
           <%= submit "Search" %>
         <% end %>
       </section>
@@ -35,11 +35,11 @@
       <%= link "About", to: Routes.page_path(@conn, :about, @locale), class: "align-middle" %>
     </header>
 
-    <main role="main" class="md:max-w-3xl mx-auto">
-      <p class="alert alert-info" role="alert">
+    <main role="main" class="container mx-auto">
+      <p class="bold text-center bg-blue-300 m-4" role="alert">
         <%= get_flash(@conn, :info) %>
       </p>
-      <p class="alert alert-danger" role="alert">
+      <p class="bold text-center bg-red-400 m-4" role="alert">
         <%= get_flash(@conn, :error) %>
       </p>
       <%= @inner_content %>

@@ -66,6 +66,8 @@ defmodule RateTheDub.Jikan do
 
   """
   @spec search!(terms :: String.t()) :: Map.t()
+  def search!(""), do: []
+
   def search!(terms) when is_binary(terms) do
     get!("/search/anime", query: [q: terms, page: 1, limit: 10]).body
     |> Map.get("results", [])
