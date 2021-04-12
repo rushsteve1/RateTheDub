@@ -1,6 +1,6 @@
 defmodule RateTheDub.Jikan do
   @moduledoc """
-  Fetches information from the Jikan.moe API for MyAnimeList.
+  Fetches information from the [Jikan](https://jikan.moe) API for MyAnimeList.
 
   It is important to cache information from the API to be a good user and not hit
   JIkan too hard. This will also make RateTheDub faster too!
@@ -25,7 +25,14 @@ defmodule RateTheDub.Jikan do
   end
 
   @doc """
-  Returns an Anime Series from Jikan parsed into an `AnimeSeries` struct.
+  Returns an Anime Series from Jikan parsed into an `AnimeSeries` struct based
+  on it's MAL Id.
+
+  ## Examples
+
+      iex> get_series!(1)
+      %AnimeSeries{}
+
   """
   @spec get_series!(id :: integer) :: AnimeSeries.t()
   def get_series!(id) do
@@ -40,11 +47,24 @@ defmodule RateTheDub.Jikan do
     |> Map.put(:dubbed_in, langs)
   end
 
+  @doc """
+  Returns the JSON data of the staff associated with an Anime Series from Jikan.
+  """
   @spec get_series_staff!(id :: integer) :: Map.t()
   def get_series_staff!(id) when is_integer(id) do
     get!("/anime/#{id}/characters_staff").body
   end
 
+  @doc """
+  Returns the Jikan search results of a given set of search terms terms, parsed
+  into an array of `AnimeSeries` structs.
+
+  ## Examples
+
+      iex> search!("cowboy bebop")
+      [%AnimeSeries{}, ...]
+
+  """
   @spec search!(terms :: String.t()) :: Map.t()
   def search!(terms) when is_binary(terms) do
     get!("/search/anime", query: [q: terms, page: 1, limit: 10]).body
@@ -66,14 +86,17 @@ defmodule RateTheDub.Jikan do
     }
   end
 
+  @spec staff_to_languages(staff :: Map.t()) :: List.t()
   defp staff_to_languages(staff) do
-    staff["characters"]
+    staff
+    |> Map.get("characters")
     |> Stream.flat_map(fn chara ->
-      chara["voice_actors"]
-      |> Enum.map(&String.downcase(&1["language"]))
+      chara
+      |> Map.get("voice_actors")
+      |> Enum.map(&Map.get(&1, "language"))
     end)
     |> Enum.uniq()
-
-    # TODO convert to language codes?
+    |> IO.inspect()
+    |> Enum.map(&RateTheDub.Locale.en_name_to_code/1)
   end
 end
