@@ -9,6 +9,7 @@ module.exports = (env, options) => {
 
   return {
     optimization: {
+      minimize: devMode ? undefined : true,
       minimizer: [new CssMinimizerPlugin()],
     },
     devtool: devMode ? "source-map" : undefined,
@@ -31,8 +32,15 @@ module.exports = (env, options) => {
           },
         },
         {
-          test: /\.[s]?css$/,
-          use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+          test: /\.css$/,
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: { publicPath: "/" },
+            },
+            "css-loader",
+            "postcss-loader",
+          ],
         },
       ],
     },
