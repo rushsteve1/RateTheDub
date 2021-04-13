@@ -71,6 +71,7 @@ defmodule RateTheDub.Jikan do
   def search!(terms) when is_binary(terms) do
     get!("/search/anime", query: [q: terms, page: 1, limit: 10]).body
     |> Map.get("results", [])
+    |> Stream.filter(&Map.get(&1, "mal_id"))
     |> Enum.map(&jikan_to_series/1)
   end
 
@@ -97,8 +98,7 @@ defmodule RateTheDub.Jikan do
       |> Map.get("voice_actors")
       |> Enum.map(&Map.get(&1, "language"))
     end)
-    |> Enum.uniq()
-    |> IO.inspect()
+    |> Stream.uniq()
     |> Enum.map(&RateTheDub.Locale.en_name_to_code/1)
   end
 end
