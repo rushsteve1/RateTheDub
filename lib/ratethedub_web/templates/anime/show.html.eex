@@ -2,7 +2,7 @@
   <section>
     <img src="<%= @series.poster_url %>" />
     <a
-      href="https://myanimelist.net/anime/<%= @series.mal_id %>"
+      href="<%= RateTheDub.Anime.AnimeSeries.make_url @series %>"
       target="_blank"
       class="block text-center text-lg w-full border-2 rounded-b-md hover:shadow"
     >
@@ -63,5 +63,16 @@
         <% end %>
       </ul>
     </div>
+  </section>
+
+  <section>
+<ul>
+<%= for actor <- @actors do %>
+  <li>
+    <%= link actor.name, to: RateTheDub.Anime.VoiceActor.make_url(actor), target: "_blank" %>
+    <small><%= actor.character %></small>
+  </li>
+  <% end %>
+</ul>
   </section>
 </article>

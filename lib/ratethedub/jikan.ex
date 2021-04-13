@@ -8,6 +8,7 @@ defmodule RateTheDub.Jikan do
 
   use Tesla
   alias RateTheDub.Anime.AnimeSeries
+  alias RateTheDub.Anime.VoiceActor
 
   plug Tesla.Middleware.BaseUrl, "https://api.jikan.moe/v3"
   plug Tesla.Middleware.Timeout, timeout: 2_000
@@ -15,45 +16,6 @@ defmodule RateTheDub.Jikan do
   plug Tesla.Middleware.Logger, debug: false
   plug RateTheDub.EtagCache
   plug Tesla.Middleware.DecodeJson
-
-  @doc """
-  Returns the JSON data of an Anime Series from Jikan parsed into Elixir
-  """
-  @spec get_series_json!(id :: integer) :: map
-  def get_series_json!(id) when is_integer(id) do
-    get!("/anime/#{id}/").body
-  end
-
-  @doc """
-  Returns an Anime Series from Jikan parsed into an `AnimeSeries` struct based
-  on it's MAL Id.
-
-  ## Examples
-
-      iex> get_series!(1)
-      %AnimeSeries{}
-
-  """
-  @spec get_series!(id :: integer) :: %AnimeSeries{}
-  def get_series!(id) do
-    langs =
-      id
-      |> get_series_staff!()
-      |> staff_to_languages()
-
-    id
-    |> get_series_json!()
-    |> jikan_to_series()
-    |> Map.put(:dubbed_in, langs)
-  end
-
-  @doc """
-  Returns the JSON data of the staff associated with an Anime Series from Jikan.
-  """
-  @spec get_series_staff!(id :: integer) :: map
-  def get_series_staff!(id) when is_integer(id) do
-    get!("/anime/#{id}/characters_staff").body
-  end
 
   @doc """
   Returns the Jikan search results of a given set of search terms terms, parsed
@@ -75,6 +37,62 @@ defmodule RateTheDub.Jikan do
     |> Enum.map(&jikan_to_series/1)
   end
 
+  @doc """
+  Returns the JSON data of an Anime Series from Jikan parsed into Elixir
+  """
+  @spec get_series_json!(id :: integer) :: map
+  def get_series_json!(id) when is_integer(id) do
+    get!("/anime/#{id}/").body
+  end
+
+  @doc """
+  Returns an Anime Series from Jikan parsed into an `AnimeSeries` struct based
+  on it's MAL Id.
+
+  ## Examples
+
+      iex> get_series!(1)
+      %AnimeSeries{}
+
+  """
+  @spec get_series!(id :: integer) :: %AnimeSeries{}
+  def get_series!(id) do
+    actors =
+      id
+      |> get_series_staff!()
+      |> staff_to_voice_actors()
+
+    langs =
+      actors
+      |> actors_to_languages()
+
+    id
+    |> get_series_json!()
+    |> jikan_to_series()
+    |> Map.put(:voice_actors, actors)
+    |> Map.put(:dubbed_in, langs)
+  end
+
+  @doc """
+  Returns the JSON data of the staff associated with an Anime Series from Jikan.
+  """
+  @spec get_series_staff!(id :: integer) :: map
+  def get_series_staff!(id) when is_integer(id) do
+    get!("/anime/#{id}/characters_staff").body
+  end
+
+  @spec staff_to_voice_actors(staff :: map) :: [%VoiceActor{}]
+  defp staff_to_voice_actors(staff) do
+    staff
+    |> Map.get("characters")
+    |> Stream.flat_map(fn chara ->
+      chara
+      |> Map.get("voice_actors")
+      |> Enum.map(&Map.put(&1, "character", chara["name"]))
+    end)
+    |> Enum.map(&jikan_to_voice_actor/1)
+  end
+
   @spec jikan_to_series(series :: map) :: %AnimeSeries{}
   defp jikan_to_series(series) do
     %AnimeSeries{
@@ -89,16 +107,21 @@ defmodule RateTheDub.Jikan do
     }
   end
 
-  @spec staff_to_languages(staff :: map) :: [String.t()]
-  defp staff_to_languages(staff) do
-    staff
-    |> Map.get("characters")
-    |> Stream.flat_map(fn chara ->
-      chara
-      |> Map.get("voice_actors")
-      |> Enum.map(&Map.get(&1, "language"))
-    end)
-    |> Stream.uniq()
-    |> Enum.map(&RateTheDub.Locale.en_name_to_code/1)
+  @spec jikan_to_voice_actor(actor :: map) :: %VoiceActor{}
+  defp jikan_to_voice_actor(actor) do
+    %VoiceActor{
+      mal_id: actor["mal_id"],
+      picture_url: actor["image_url"],
+      name: actor["name"],
+      language: RateTheDub.Locale.en_name_to_code(actor["language"]),
+      character: actor["character"]
+    }
+  end
+
+  @spec actors_to_languages(actors :: map) :: [String.t()]
+  defp actors_to_languages(actors) do
+    actors
+    |> Stream.map(&Map.get(&1, :language))
+    |> Enum.uniq()
   end
 end
