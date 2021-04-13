@@ -50,8 +50,8 @@
               title="<%= anime.title %>"
               class="inline-block max-h-full"
             />
-            <%= anime.title %>
-            <span class="bold"><%= count %></span>
+            <span class="flex-grow px-2 truncate"><%= anime.title %></span>
+            <span class="px-3 bg-blue-200 font-bold"><%= count %></span>
           </li>
         </a>
       <% end %>

@@ -7,7 +7,8 @@
           title="<%= result.title %>"
           class="inline-block max-h-full"
         />
-        <%= result.title %>
+        <span><%= result.title %></span>
+        <span></span>
       </li>
     </a>
   <% end %>

@@ -4,48 +4,56 @@
     <a
       href="https://myanimelist.net/anime/<%= @series.mal_id %>"
       target="_blank"
-      class=""
+      class="block text-center text-lg w-full border-2 rounded-b-md hover:shadow"
     >
       View on MyAnimeList
     </a>
   </section>
 
   <section class="flex-grow">
-    <div class="text-center text-4xl">
-      <div>
-        <%= gettext "Is the" %>
-        <span><%= @locale %></span>
-        <%= gettext "dub for" %>
-      </div>
-      <div><%= @series.title %></div>
-      <div>
-        <%= gettext "any good?" %>
-      </div>
-    </div>
+    <%= if @locale in @series.dubbed_in do %>
+      <h2 class="text-center text-4xl">
+        <div>
+          <%= gettext "Is the" %>
+          <span><%= @locale %></span>
+          <%= gettext "dub for" %>
+        </div>
+        <div><%= @series.title %></div>
+        <div>
+          <%= gettext "any good?" %>
+        </div>
+      </h2>
 
-    <div class="text-center text-2xl my-4">
-      <%= if @count > 0 do %>
-        <%= gettext "%{count} people think so", count: @count %>
-      <% else %>
-        <%= gettext "No one has voted for this yet..." %>
-      <% end %>
-    </div>
-
-    <%= if @series.featured_in == @locale do %>
-      <%= gettext "This dub is featured!" %>
-    <% end %>
-
-    <div
-      class="w-full md:w-max mx-auto p-2 bg-blue-400 border-2 border-blue-600 shadow hover:shadow-md"
-    >
-      <%= if @has_voted do %>
-        <span class="cursor-not-allowed">You've already voted</span>
-      <% else %>
-        <%= form_for @conn, Routes.anime_path(@conn, :vote, @locale, @series.mal_id), [name: :vote, method: :post, data_swup_form: true], fn f -> %>
-          <%= submit "Vote Up" %>
+      <div class="text-center text-2xl my-4">
+        <%= if @count > 0 do %>
+          <%= gettext "%{count} people think so", count: @count %>
+        <% else %>
+          <%= gettext "No one has voted for this yet..." %>
         <% end %>
+      </div>
+
+      <%= if @series.featured_in == @locale do %>
+        <%= gettext "This dub is featured!" %>
       <% end %>
-    </div>
+
+      <div
+        class="w-full md:w-max mx-auto p-2 bg-blue-400 border-2 border-blue-600 shadow hover:shadow-md"
+      >
+        <%= if @has_voted do %>
+          <span class="cursor-not-allowed">You've already voted</span>
+        <% else %>
+          <%= form_for @conn, Routes.anime_path(@conn, :vote, @locale, @series.mal_id), [name: :vote, method: :post, data_swup_form: true], fn _ -> %>
+            <%= submit "Vote Up" %>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <h2 class="text-center text-4xl">
+        <span><%= @series.title %></span>
+        <span><%= gettext "is not dubbed in" %></span>
+        <span><%= @locale %></span>
+      </h2>
+    <% end %>
 
     <div>
       <h3><%= gettext "This series is also dubbed in..." %></h3>

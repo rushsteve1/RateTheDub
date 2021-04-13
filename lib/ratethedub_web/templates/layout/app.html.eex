@@ -45,7 +45,7 @@
       <%= @inner_content %>
     </main>
 
-    <footer class="flex flex-row justify-end px-4">
+    <footer class="flex flex-row justify-end p-4">
       <select name="locale">
         <%= for loc <- Gettext.known_locales(RateTheDubWeb.Gettext) do %>
           <option value="<%= loc %>">
