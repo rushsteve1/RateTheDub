@@ -35,7 +35,7 @@ defmodule RateTheDub.DubVotes do
       ** (Ecto.NoResultsError)
 
   """
-  def get_vote!(id), do: Repo.get!(Vote, id)
+  def get_vote!(id, lang), do: Repo.get_by!(Vote, mal_id: id, language: lang)
 
   @doc """
   Gets the number of votes for this anime series and language pair.

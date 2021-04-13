@@ -17,7 +17,6 @@ defmodule RateTheDub.AnimeTest do
     @update_attrs %{
       dubbed_in: [],
       featured_in: "some updated featured_in",
-      mal_id: 43,
       streaming: %{},
       title: "some updated title",
       title_tr: %{}
@@ -47,7 +46,7 @@ defmodule RateTheDub.AnimeTest do
 
     test "get_anime_series!/1 returns the anime_series with given id" do
       anime_series = anime_series_fixture()
-      assert Anime.get_anime_series!(anime_series.id) == anime_series
+      assert Anime.get_anime_series!(anime_series.mal_id) == anime_series
     end
 
     test "create_anime_series/1 with valid data creates a anime_series" do
@@ -72,7 +71,7 @@ defmodule RateTheDub.AnimeTest do
 
       assert anime_series.dubbed_in == []
       assert anime_series.featured_in == "some updated featured_in"
-      assert anime_series.mal_id == 43
+      assert anime_series.mal_id == 42
       assert anime_series.streaming == %{}
       assert anime_series.title == "some updated title"
       assert anime_series.title_tr == %{}
@@ -81,13 +80,13 @@ defmodule RateTheDub.AnimeTest do
     test "update_anime_series/2 with invalid data returns error changeset" do
       anime_series = anime_series_fixture()
       assert {:error, %Ecto.Changeset{}} = Anime.update_anime_series(anime_series, @invalid_attrs)
-      assert anime_series == Anime.get_anime_series!(anime_series.id)
+      assert anime_series == Anime.get_anime_series!(anime_series.mal_id)
     end
 
     test "delete_anime_series/1 deletes the anime_series" do
       anime_series = anime_series_fixture()
       assert {:ok, %AnimeSeries{}} = Anime.delete_anime_series(anime_series)
-      assert_raise Ecto.NoResultsError, fn -> Anime.get_anime_series!(anime_series.id) end
+      assert_raise Ecto.NoResultsError, fn -> Anime.get_anime_series!(anime_series.mal_id) end
     end
 
     test "change_anime_series/1 returns a anime_series changeset" do
