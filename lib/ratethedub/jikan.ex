@@ -19,7 +19,7 @@ defmodule RateTheDub.Jikan do
   @doc """
   Returns the JSON data of an Anime Series from Jikan parsed into Elixir
   """
-  @spec get_series_json!(id :: integer) :: Map.t()
+  @spec get_series_json!(id :: integer) :: map
   def get_series_json!(id) when is_integer(id) do
     get!("/anime/#{id}/").body
   end
@@ -34,7 +34,7 @@ defmodule RateTheDub.Jikan do
       %AnimeSeries{}
 
   """
-  @spec get_series!(id :: integer) :: AnimeSeries.t()
+  @spec get_series!(id :: integer) :: %AnimeSeries{}
   def get_series!(id) do
     langs =
       id
@@ -50,7 +50,7 @@ defmodule RateTheDub.Jikan do
   @doc """
   Returns the JSON data of the staff associated with an Anime Series from Jikan.
   """
-  @spec get_series_staff!(id :: integer) :: Map.t()
+  @spec get_series_staff!(id :: integer) :: map
   def get_series_staff!(id) when is_integer(id) do
     get!("/anime/#{id}/characters_staff").body
   end
@@ -65,7 +65,7 @@ defmodule RateTheDub.Jikan do
       [%AnimeSeries{}, ...]
 
   """
-  @spec search!(terms :: String.t()) :: Map.t()
+  @spec search!(terms :: String.t()) :: [map]
   def search!(""), do: []
 
   def search!(terms) when is_binary(terms) do
@@ -74,7 +74,7 @@ defmodule RateTheDub.Jikan do
     |> Enum.map(&jikan_to_series/1)
   end
 
-  @spec jikan_to_series(series :: Map.t()) :: AnimeSeries.t()
+  @spec jikan_to_series(series :: map) :: %AnimeSeries{}
   defp jikan_to_series(series) do
     %AnimeSeries{
       mal_id: series["mal_id"],
@@ -88,7 +88,7 @@ defmodule RateTheDub.Jikan do
     }
   end
 
-  @spec staff_to_languages(staff :: Map.t()) :: List.t()
+  @spec staff_to_languages(staff :: map) :: [String.t()]
   defp staff_to_languages(staff) do
     staff
     |> Map.get("characters")
