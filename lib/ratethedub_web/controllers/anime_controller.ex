@@ -28,6 +28,9 @@ defmodule RateTheDubWeb.AnimeController do
   def vote(conn, %{"id" => id}) do
     {ip, snowflake} = user_info(conn)
     has_voted = DubVotes.has_voted_for(id, conn.assigns.locale, ip, snowflake)
+    series = Anime.get_anime_series!(id)
+    count = DubVotes.count_votes_for(id, conn.assigns.locale)
+    all_counts = DubVotes.count_all_votes_for(id)
 
     if has_voted do
       conn
@@ -45,7 +48,7 @@ defmodule RateTheDubWeb.AnimeController do
       |> put_flash(:info, gettext("Vote Recorded"))
     end
     |> put_resp_cookie(@cookie_name, snowflake, max_age: @six_months, encrypt: true)
-    |> redirect(to: Routes.anime_path(conn, :show, conn.assigns.locale, id))
+    |> render("show.html", has_voted: true, series: series, count: count, all_counts: all_counts)
   end
 
   def user_info(conn) do
@@ -57,7 +60,7 @@ defmodule RateTheDubWeb.AnimeController do
   end
 
   defp make_snowflake(ip) do
-    :crypto.hash(:md5, ip)
+    :crypto.hash(:sha256, ip)
     |> Base.encode64()
   end
 end

@@ -12,4 +12,21 @@ import "../css/app.css";
 //     import {Socket} from "phoenix"
 //     import socket from "./socket"
 //
-import "phoenix_html";
+// import "phoenix_html";
+
+// Import Swup and its plugins which will be used to preload pages on hover and
+// to perform page transitions.
+// This gives RateTheDub an extremely snappy feeling while remaining entirely
+// server-side rendered and with full no-JS support.
+import Swup from "swup";
+import SwupFormsPlugin from "@swup/forms-plugin";
+import SwupPreloadPlugin from "@swup/preload-plugin";
+import SwupProgressPlugin from "@swup/progress-plugin";
+
+const swup = new Swup({
+  plugins: [
+    new SwupFormsPlugin(),
+    new SwupPreloadPlugin(),
+    new SwupProgressPlugin({ delay: 500 }),
+  ],
+});

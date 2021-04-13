@@ -11,8 +11,12 @@
     "watch": "NODE_ENV=development webpack --mode development --watch --watch-options-stdin"
   },
   "dependencies": {
+    "@swup/forms-plugin": "^1.1.1",
+    "@swup/preload-plugin": "^1.0.3",
+    "@swup/progress-plugin": "^1.0.1",
     "phoenix": "file:../deps/phoenix",
-    "phoenix_html": "file:../deps/phoenix_html"
+    "phoenix_html": "file:../deps/phoenix_html",
+    "swup": "^2.0.14"
   },
   "devDependencies": {
     "@babel/core": "^7.13.15",

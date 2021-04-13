@@ -32,7 +32,7 @@ defmodule RateTheDubWeb.Router do
     get "/about", PageController, :about
 
     get "/anime/:id", AnimeController, :show
-    post "/anime/:id/vote", AnimeController, :vote
+    post "/anime/:id", AnimeController, :vote
 
     get "/search", SearchController, :index
   end

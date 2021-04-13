@@ -40,6 +40,15 @@ defmodule RateTheDub.Anime do
   @doc """
   Gets a single anime series if it exists or downloads and creates it from Jikan
   using the `RateTheDub.Jikan` module.
+
+  ## Examples
+
+      iex> get_or_create_anime_series!(10)
+      %AnimeSeries{}
+
+      iex> get_or_create_anime_series!(-1)
+      ** (Ecto.NoResultsError)
+
   """
   def get_or_create_anime_series!(id) do
     case Repo.get(AnimeSeries, id) do

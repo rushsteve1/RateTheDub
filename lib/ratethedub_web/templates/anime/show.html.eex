@@ -41,7 +41,9 @@
       <%= if @has_voted do %>
         <span class="cursor-not-allowed">You've already voted</span>
       <% else %>
-        <%= button "Vote Up", to: Routes.anime_path(@conn, :vote, @locale, @series.mal_id), method: :post %>
+        <%= form_for @conn, Routes.anime_path(@conn, :vote, @locale, @series.mal_id), [name: :vote, method: :post, data_swup_form: true], fn f -> %>
+          <%= submit "Vote Up" %>
+        <% end %>
       <% end %>
     </div>
 
