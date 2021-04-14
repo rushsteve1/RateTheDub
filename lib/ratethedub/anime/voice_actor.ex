@@ -1,6 +1,12 @@
 defmodule RateTheDub.Anime.VoiceActor do
+  @moduledoc """
+  Embedded schema that represents a single voice actor as stored in the
+  `voice_actors` map on the `AnimeSeries` schema
+  """
+
   use Ecto.Schema
 
+  @primary_key false
   embedded_schema do
     field :mal_id, :integer, public_key: true
     field :name, :string
@@ -9,9 +15,10 @@ defmodule RateTheDub.Anime.VoiceActor do
     field :character, :string
   end
 
-  def make_url(%__MODULE__{mal_id: id}), do: "https://myanimelist.net/people/#{id}/"
+  def to_url(%__MODULE__{mal_id: id}), do: "https://myanimelist.net/people/#{id}/"
 
-  def get_actors_by_lang(series, lang), do:
-    Enum.filter(series.voice_actors, &(&1.language == lang))
-
+  def get_actors_by_lang(series, lang) do
+    series.voice_actors
+    |> Enum.filter(&(&1.language == lang))
+  end
 end

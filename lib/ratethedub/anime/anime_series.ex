@@ -1,4 +1,8 @@
 defmodule RateTheDub.Anime.AnimeSeries do
+  @moduledoc """
+  Database schema representing a single anime series in the database
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias RateTheDub.Anime.VoiceActor
@@ -32,12 +36,12 @@ defmodule RateTheDub.Anime.AnimeSeries do
       :title_tr,
       :dubbed_in,
       :streaming,
-      :featured_in,
-      :voice_actors
+      :featured_in
     ])
+    |> cast_embed(:voice_actors)
     |> validate_required([:mal_id, :title, :dubbed_in])
     |> unique_constraint(:title)
   end
 
-  def make_url(%__MODULE__{mal_id: id}), do: "https://myanimelist.net/anime/#{id}/"
+  def to_url(%__MODULE__{mal_id: id}), do: "https://myanimelist.net/anime/#{id}/"
 end

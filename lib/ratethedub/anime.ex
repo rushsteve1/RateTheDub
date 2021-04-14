@@ -35,7 +35,7 @@ defmodule RateTheDub.Anime do
       ** (Ecto.NoResultsError)
 
   """
-  def get_anime_series!(id), do: Repo.get!(AnimeSeries, id)
+  def get_anime_series!(id), do: Repo.get_by!(AnimeSeries, mal_id: id)
 
   @doc """
   Gets a single anime series if it exists or downloads and creates it from Jikan
@@ -51,13 +51,13 @@ defmodule RateTheDub.Anime do
 
   """
   def get_or_create_anime_series!(id) do
-    case Repo.get(AnimeSeries, id) do
+    case Repo.get_by(AnimeSeries, mal_id: id) do
       %AnimeSeries{} = series ->
         series
 
       nil ->
         series = RateTheDub.Jikan.get_series!(id)
-        Repo.insert(series)
+        Repo.insert!(series)
         series
 
       _ ->

@@ -10,7 +10,7 @@ defmodule RateTheDub.Repo.Migrations.CreateAnime do
       add :dubbed_in, {:array, :string}
       add :streaming, :map, default: %{}
       add :featured_in, :string
-      add :voice_actors, {:array, :map}, default: []
+      add :voice_actors, :map, default: %{}
 
       timestamps()
     end

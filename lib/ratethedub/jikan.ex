@@ -6,6 +6,8 @@ defmodule RateTheDub.Jikan do
   JIkan too hard. This will also make RateTheDub faster too!
   """
 
+  @characters_taken 5
+
   use Tesla
   alias RateTheDub.Anime.AnimeSeries
   alias RateTheDub.Anime.VoiceActor
@@ -85,12 +87,21 @@ defmodule RateTheDub.Jikan do
   defp staff_to_voice_actors(staff) do
     staff
     |> Map.get("characters")
+    |> Stream.take(@characters_taken)
     |> Stream.flat_map(fn chara ->
       chara
       |> Map.get("voice_actors")
+      |> Stream.take(1)
       |> Enum.map(&Map.put(&1, "character", chara["name"]))
     end)
     |> Enum.map(&jikan_to_voice_actor/1)
+  end
+
+  @spec actors_to_languages(actors :: [%VoiceActor{}]) :: [String.t()]
+  defp actors_to_languages(actors) do
+    actors
+    |> Stream.map(&Map.get(&1, :language))
+    |> Enum.uniq()
   end
 
   @spec jikan_to_series(series :: map) :: %AnimeSeries{}
@@ -116,12 +127,5 @@ defmodule RateTheDub.Jikan do
       language: RateTheDub.Locale.en_name_to_code(actor["language"]),
       character: actor["character"]
     }
-  end
-
-  @spec actors_to_languages(actors :: map) :: [String.t()]
-  defp actors_to_languages(actors) do
-    actors
-    |> Stream.map(&Map.get(&1, :language))
-    |> Enum.uniq()
   end
 end

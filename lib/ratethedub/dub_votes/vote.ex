@@ -1,4 +1,9 @@
 defmodule RateTheDub.DubVotes.Vote do
+  @moduledoc """
+  Database schema for a single positive vote for the dub of an `AnimeSeries` in
+  a particular language.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 

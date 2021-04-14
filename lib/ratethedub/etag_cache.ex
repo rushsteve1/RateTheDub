@@ -5,7 +5,12 @@ defmodule RateTheDub.EtagCache do
   This module additionally functions as a GenServer for itself to call so that
   it is able to initialize and keep track of the ETS tables it saves the cached
   information to.
+
+  As of now this uses ETS for its caching, but dependng on the scaling needs
+  this might need to switch to a Postgres backend to work accross the different
+  replicas.
   """
+
   @behaviour Tesla.Middleware
   use GenServer
   require Logger
