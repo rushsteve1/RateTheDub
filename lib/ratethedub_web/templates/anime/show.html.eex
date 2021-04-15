@@ -16,7 +16,7 @@
         <h2 class="text-center text-4xl">
           <div>
             <%= gettext "Is the" %>
-            <span><%= @locale %></span>
+            <span><%= RateTheDub.Locale.locale_own_name @locale %></span>
             <%= gettext "dub for" %>
           </div>
           <div><%= @series.title %></div>

@@ -1,5 +1,5 @@
 <div id="jumbo" class="text-4xl text-center my-8">
-  <%= gettext("Was the %{lang} dub for that anime any good?", lang: @locale) %>
+  <%= gettext("Was the %{lang} dub for that anime any good?", lang: RateTheDub.Locale.locale_own_name(@locale)) %>
 </div>
 
 <section class="grid grid-cols-1 md:grid-cols-3 grid-rows-1">
