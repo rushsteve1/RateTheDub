@@ -13,7 +13,8 @@ defmodule RateTheDub.Jikan do
   alias RateTheDub.Anime.VoiceActor
 
   plug Tesla.Middleware.BaseUrl, "https://api.jikan.moe/v3"
-  plug Tesla.Middleware.Timeout, timeout: 2_000
+  # plug Tesla.Middleware.Timeout, timeout: 2_000
+  plug Tesla.Middleware.Retry
   plug Tesla.Middleware.FollowRedirects
   plug Tesla.Middleware.Logger, debug: false
   plug RateTheDub.ETagCache
@@ -33,6 +34,8 @@ defmodule RateTheDub.Jikan do
   def search!(""), do: []
 
   def search!(terms) when is_binary(terms) do
+    terms = terms |> String.trim() |> String.downcase()
+
     get!("/search/anime", query: [q: terms, page: 1, limit: 10]).body
     |> Map.get("results", [])
     |> Stream.filter(&Map.get(&1, "mal_id"))
@@ -44,7 +47,7 @@ defmodule RateTheDub.Jikan do
   """
   @spec get_series_json!(id :: integer) :: map
   def get_series_json!(id) when is_integer(id) do
-    get!("/anime/#{id}/").body
+    get!("/anime/#{id}/", opts: [cache: false]).body
   end
 
   @doc """
@@ -80,21 +83,40 @@ defmodule RateTheDub.Jikan do
   """
   @spec get_series_staff!(id :: integer) :: map
   def get_series_staff!(id) when is_integer(id) do
-    get!("/anime/#{id}/characters_staff").body
+    get!("/anime/#{id}/characters_staff", opts: [cache: false]).body
   end
 
   @spec staff_to_voice_actors(staff :: map) :: [%VoiceActor{}]
   defp staff_to_voice_actors(staff) do
     staff
     |> Map.get("characters")
-    |> Stream.take(@characters_taken)
-    |> Stream.flat_map(fn chara ->
-      chara
-      |> Map.get("voice_actors")
-      |> Stream.take(1)
-      |> Enum.map(&Map.put(&1, "character", chara["name"]))
-    end)
+    |> Enum.take(@characters_taken)
+    |> Stream.flat_map(&chara_to_voice_actors/1)
     |> Enum.map(&jikan_to_voice_actor/1)
+  end
+
+  @spec chara_to_voice_actors(chara :: map) :: [map]
+  defp chara_to_voice_actors(chara) do
+    chara
+    |> Map.get("voice_actors")
+    |> Stream.chunk_while(
+      [],
+      &chunk_by_language/2,
+      &{:cont, &1}
+    )
+    |> Stream.map(&List.first/1)
+    |> Enum.map(&Map.put(&1, "character", chara["name"]))
+  end
+
+  defp chunk_by_language(a, []), do: {:cont, [a]}
+
+  @spec chunk_by_language(a :: map, acc :: [map]) :: {:cont, [map]} | {:cont, [map], [map]}
+  defp chunk_by_language(a, [f | _] = acc) do
+    if a["language"] == f["language"] do
+      {:cont, [a | acc]}
+    else
+      {:cont, Enum.reverse(acc), [a]}
+    end
   end
 
   @spec actors_to_languages(actors :: [%VoiceActor{}]) :: [String.t()]

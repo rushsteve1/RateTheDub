@@ -38,6 +38,20 @@ defmodule RateTheDub.Anime do
   def get_anime_series!(id), do: Repo.get_by!(AnimeSeries, mal_id: id)
 
   @doc """
+  Gets a single anime series.
+
+  ## Examples
+
+      iex> get_anime_series(123)
+      %AnimeSeries{}
+
+      iex> get_anime_series(456)
+      nil
+
+  """
+  def get_anime_series(id), do: Repo.get_by(AnimeSeries, mal_id: id)
+
+  @doc """
   Gets a single anime series if it exists or downloads and creates it from Jikan
   using the `RateTheDub.Jikan` module.
 
@@ -56,8 +70,9 @@ defmodule RateTheDub.Anime do
         series
 
       nil ->
-        series = RateTheDub.Jikan.get_series!(id)
-        Repo.insert!(series)
+        id
+        |> RateTheDub.Jikan.get_series!()
+        |> Repo.insert!(on_conflict: :replace_all, conflict_target: :mal_id)
 
       _ ->
         raise Ecto.NoResultsError, queryable: AnimeSeries

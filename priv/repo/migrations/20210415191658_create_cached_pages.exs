@@ -11,7 +11,6 @@ defmodule RateTheDub.Repo.Migrations.CreateCachedPages do
     end
 
     create unique_index(:cached_pages, [:url])
-    create unique_index(:cached_pages, [:etag])
     create unique_index(:cached_pages, [:url, :etag])
   end
 end

@@ -50,9 +50,11 @@
         </div>
       <% else %>
         <h2 class="text-center text-4xl">
-          <span><%= @series.title %></span>
-          <span><%= gettext "is not dubbed in" %></span>
-          <span><%= @locale %></span>
+          <div><%= @series.title %></div>
+          <div>
+            <span><%= gettext "is not dubbed in" %></span>
+            <span><%= RateTheDub.Locale.locale_own_name @locale %></span>
+          </div>
         </h2>
       <% end %>
 

@@ -49,8 +49,24 @@ defmodule RateTheDub.ETagCache do
   def create_cached_page(attrs \\ %{}) do
     %CachedPage{}
     |> CachedPage.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(on_conflict: :replace_all, conflict_target: :url)
   end
+
+  @doc """
+  Deletes all cached pages that are not for a search URL to cut down on
+  duplication in the database.
+
+  To be used as a manual cleanup task when needed. The `:cache` option should be
+  used to make this less necessary.
+  """
+  def delete_non_searches() do
+    CachedPage
+    |> where([p], not like(p.url, "%api.jikan.moe/v3/search%"))
+    |> Repo.delete_all()
+  end
+
+  @impl Tesla.Middleware
+  def call(%{opts: [cache: false]} = env, next, _), do: Tesla.run(env, next)
 
   @impl Tesla.Middleware
   def call(%{method: :get} = env, next, _) do
@@ -90,7 +106,7 @@ defmodule RateTheDub.ETagCache do
   end
 
   defp process_resp({:ok, %{status: 304} = env}, %{body: body}) do
-    Logger.info("Serving cached request for #{env.url}")
+    Logger.info("Serving cached request for #{Tesla.build_url(env.url, env.query)}")
     {:ok, Map.put(env, :body, body)}
   end
 

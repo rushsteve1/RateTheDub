@@ -16,6 +16,6 @@ defmodule RateTheDub.Repo.Migrations.CreateAnime do
     end
 
     create unique_index(:anime, [:mal_id])
-    create unique_index(:anime, [:title])
+    create index(:anime, [:title])
   end
 end
