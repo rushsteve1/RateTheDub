@@ -16,7 +16,7 @@ defmodule RateTheDub.Jikan do
   plug Tesla.Middleware.Timeout, timeout: 2_000
   plug Tesla.Middleware.FollowRedirects
   plug Tesla.Middleware.Logger, debug: false
-  plug RateTheDub.EtagCache
+  plug RateTheDub.ETagCache
   plug Tesla.Middleware.DecodeJson
 
   @doc """

@@ -58,7 +58,6 @@ defmodule RateTheDub.Anime do
       nil ->
         series = RateTheDub.Jikan.get_series!(id)
         Repo.insert!(series)
-        series
 
       _ ->
         raise Ecto.NoResultsError, queryable: AnimeSeries

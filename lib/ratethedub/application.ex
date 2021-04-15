@@ -13,8 +13,6 @@ defmodule RateTheDub.Application do
       RateTheDubWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: RateTheDub.PubSub},
-      # Start the Etag cache and its ETS tables
-      {RateTheDub.EtagCache, name: RateTheDub.EtagCache},
       # Start the Endpoint (http/https)
       RateTheDubWeb.Endpoint
       # Start a worker by calling: RateTheDub.Worker.start_link(arg)
