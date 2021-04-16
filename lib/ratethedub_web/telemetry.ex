@@ -1,4 +1,9 @@
 defmodule RateTheDubWeb.Telemetry do
+  @moduledoc """
+  Instrumentation and events built-in to Phoenix using the
+  [Telemetry](https://hexdocs.pm/phoenix/telemetry.html) library.
+  """
+
   use Supervisor
   import Telemetry.Metrics
 

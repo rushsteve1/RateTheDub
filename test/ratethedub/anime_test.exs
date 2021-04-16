@@ -12,14 +12,16 @@ defmodule RateTheDub.AnimeTest do
       mal_id: 42,
       streaming: %{},
       title: "some title",
-      title_tr: %{}
+      title_tr: %{},
+      voice_actors: []
     }
     @update_attrs %{
       dubbed_in: [],
       featured_in: "some updated featured_in",
       streaming: %{},
       title: "some updated title",
-      title_tr: %{}
+      title_tr: %{},
+      voice_actors: []
     }
     @invalid_attrs %{
       dubbed_in: nil,
@@ -27,7 +29,8 @@ defmodule RateTheDub.AnimeTest do
       mal_id: nil,
       streaming: nil,
       title: nil,
-      title_tr: nil
+      title_tr: nil,
+      voice_actors: nil
     }
 
     def anime_series_fixture(attrs \\ %{}) do
@@ -57,6 +60,7 @@ defmodule RateTheDub.AnimeTest do
       assert anime_series.streaming == %{}
       assert anime_series.title == "some title"
       assert anime_series.title_tr == %{}
+      assert anime_series.voice_actors == []
     end
 
     test "create_anime_series/1 with invalid data returns error changeset" do
@@ -75,6 +79,7 @@ defmodule RateTheDub.AnimeTest do
       assert anime_series.streaming == %{}
       assert anime_series.title == "some updated title"
       assert anime_series.title_tr == %{}
+      assert anime_series.voice_actors == []
     end
 
     test "update_anime_series/2 with invalid data returns error changeset" do

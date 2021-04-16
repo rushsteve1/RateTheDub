@@ -8,7 +8,7 @@ defmodule RateTheDub.Anime.VoiceActor do
 
   @primary_key false
   embedded_schema do
-    field :mal_id, :integer, public_key: true
+    field :mal_id, :integer, primary_key: true
     field :name, :string
     field :picture_url, :string
     field :language, :string
