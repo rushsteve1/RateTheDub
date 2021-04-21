@@ -18,7 +18,7 @@ The main external dependencies of RateTheDub are...
 - [Elixir](https://elixir-lang.org)
 - [PostgreSQL](https://www.postgresql.org/)
 
-We intend to support only the *latest* versions of the above, though older
+We intend to support only the _latest_ versions of the above, though older
 versions may continue to work as intended. In particular slightly older versions
 of Postgres are likely fine. However please be warned that an issues caused by
 using an outdated dependency version will not be given support.

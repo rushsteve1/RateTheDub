@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <url>
+    <loc>https://ratethedub.com/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://ratethedub.com/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <%= for series <- @series do %>
+    <%= for locale <- series.dubbed_in do %>
+    <url>
+      <loc><%= "https://ratethedub.com/#{locale}/#{series.mal_id}" %></loc>
+      <changefreq>hourly</changefreq>
+      <priority>0.5</priority>
+    </url>
+    <% end %>
+  <% end %>
+
+</urlset>

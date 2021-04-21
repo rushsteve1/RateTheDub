@@ -62,6 +62,8 @@ defmodule RateTheDub.Jikan do
   """
   @spec get_series!(id :: integer) :: %AnimeSeries{}
   def get_series!(id) do
+    # TODO make sure that if any aspect of this fails the whole thing fails
+
     actors =
       id
       |> get_series_staff!()

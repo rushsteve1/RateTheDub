@@ -138,20 +138,9 @@ defmodule RateTheDub.DubVotes do
   end
 
   @doc """
-  Gets the top 5 series with the most votes for the given language in descending
-  order.
+  Returns true if the given IP address or snowflake has voted for this given
+  series and language pair.
   """
-  def top_rated_by_lang(lang) do
-    Vote
-    |> select([v], [v.mal_id, count(v)])
-    |> where(language: ^lang)
-    |> group_by(:mal_id)
-    |> order_by(desc: :count)
-    |> limit(5)
-    |> Repo.all()
-    |> Enum.map(fn [id, count] -> [RateTheDub.Anime.get_anime_series!(id), count] end)
-  end
-
   def has_voted_for(id, lang, ip, snow) do
     Vote
     |> where(mal_id: ^id)

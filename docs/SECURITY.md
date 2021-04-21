@@ -19,15 +19,15 @@ latest tagged release so follows the above release policy.
 ## Reporting a Vulnerability
 
 **The more information your provide the easier it will be to fix the issue. Pull
-  Requests are always welcome!**
+Requests are always welcome!**
 
 Please follow
 [Responsible Disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure)
 and report all security vulnerabilities to
 [contact@ratethedub.com](mailto:contact@ratethedub.com).
 
-If you *really* want to report a vulnerability with
-[Full Disclosure](https://en.wikipedia.org/wiki/Full_disclosure_(computer_security))
+If you _really_ want to report a vulnerability with
+[Full Disclosure](<https://en.wikipedia.org/wiki/Full_disclosure_(computer_security)>)
 please at least mention the
 [RateTheDub Twitter account](https://twitter.com/RateTheDub)
 so that we know about it. But please consider emailing us about the vulnerability

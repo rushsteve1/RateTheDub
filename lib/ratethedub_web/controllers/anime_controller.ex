@@ -53,7 +53,7 @@ defmodule RateTheDubWeb.AnimeController do
     |> render("show.html", has_voted: true, series: series, count: count, all_counts: all_counts)
   end
 
-  def user_info(conn) do
+  defp user_info(conn) do
     conn = fetch_cookies(conn, encrypted: [@cookie_name])
     ip = conn.remote_ip |> :inet_parse.ntoa() |> to_string()
     snow = conn.cookies[@cookie_name] || make_snowflake(ip)

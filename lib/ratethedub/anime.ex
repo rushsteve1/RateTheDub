@@ -7,6 +7,9 @@ defmodule RateTheDub.Anime do
   alias RateTheDub.Repo
 
   alias RateTheDub.Anime.AnimeSeries
+  alias RateTheDub.DubVotes.Vote
+
+  @limit 5
 
   @doc """
   Returns the list of anime.
@@ -17,7 +20,7 @@ defmodule RateTheDub.Anime do
       [%AnimeSeries{}, ...]
 
   """
-  def list_anime do
+  def list_anime_series do
     Repo.all(AnimeSeries)
   end
 
@@ -77,6 +80,74 @@ defmodule RateTheDub.Anime do
       _ ->
         raise Ecto.NoResultsError, queryable: AnimeSeries
     end
+  end
+
+  @doc """
+  Gets all the featured series in all languages with no limits
+  """
+  def get_featured() do
+    AnimeSeries
+    |> select([a], %{mal_id: a.mal_id, featured_in: a.featured_in})
+    |> where([a], not is_nil(a.featured_in))
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets the top 5 series that are featured in this language
+
+  ## Examples
+
+      iex> featured_by_lang("en")
+      [%AnimeSeries{}, ...]
+
+  """
+  def get_featured_for(lang) do
+    AnimeSeries
+    |> where(featured_in: ^lang)
+    |> limit(@limit)
+    |> Repo.all()
+  end
+
+  def get_trending() do
+    # TODO trending functions
+    nil
+  end
+
+  @doc """
+  Gets the top rated 5 series in all languages and returns then as an array of
+  rows.
+
+  ## Examples
+
+      iex> get_top_rated()
+      [[1, "en" 10], [10, "es", 20], ...]
+
+  """
+  def get_top_rated() do
+    Vote
+    |> select([v], [v.mal_id, v.language, count(v)])
+    |> group_by([:mal_id, :language])
+    |> order_by(desc: :language)
+    |> Repo.all()
+    |> Stream.chunk_by(fn [_, l, _] -> l end)
+    |> Enum.flat_map(fn lis ->
+      lis |> Enum.sort_by(&List.last/1) |> Enum.reverse() |> Enum.take(@limit)
+    end)
+  end
+
+  @doc """
+  Gets the top 5 series with the most votes for the given language in descending
+  order.
+  """
+  def get_top_rated_for(lang) do
+    Vote
+    |> select([v], [v.mal_id, count(v)])
+    |> where(language: ^lang)
+    |> group_by(:mal_id)
+    |> order_by(desc: :count)
+    |> limit(@limit)
+    |> Repo.all()
+    |> Enum.map(fn [id, count] -> [RateTheDub.Anime.get_anime_series!(id), count] end)
   end
 
   @doc """
@@ -142,21 +213,5 @@ defmodule RateTheDub.Anime do
   """
   def change_anime_series(%AnimeSeries{} = anime_series, attrs \\ %{}) do
     AnimeSeries.changeset(anime_series, attrs)
-  end
-
-  @doc """
-  Gets the top 5 series that are featured in this language
-
-  ## Examples
-
-      iex> featured_by_lang("en")
-      [%AnimeSeries{}, ...]
-
-  """
-  def featured_by_lang(lang) do
-    AnimeSeries
-    |> where(featured_in: ^lang)
-    |> limit(5)
-    |> Repo.all()
   end
 end
