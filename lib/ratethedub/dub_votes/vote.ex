@@ -8,6 +8,7 @@ defmodule RateTheDub.DubVotes.Vote do
   import Ecto.Changeset
 
   @primary_key false
+  @derive {Jason.Encoder, except: [:__meta__, :anime]}
   schema "dubvotes" do
     field :mal_id, :integer, primary_key: true
     field :language, :string, primary_key: true
@@ -28,5 +29,10 @@ defmodule RateTheDub.DubVotes.Vote do
     vote
     |> cast(attrs, [:mal_id, :language, :user_ip, :user_snowflake])
     |> validate_required([:mal_id, :language])
+  end
+
+  def make_snowflake(ip) do
+    :crypto.hash(:sha256, ip)
+    |> Base.encode64()
   end
 end

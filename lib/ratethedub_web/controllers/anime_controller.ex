@@ -56,13 +56,8 @@ defmodule RateTheDubWeb.AnimeController do
   defp user_info(conn) do
     conn = fetch_cookies(conn, encrypted: [@cookie_name])
     ip = conn.remote_ip |> :inet_parse.ntoa() |> to_string()
-    snow = conn.cookies[@cookie_name] || make_snowflake(ip)
+    snow = conn.cookies[@cookie_name] || DubVotes.Vote.make_snowflake(ip)
 
     {ip, snow}
-  end
-
-  defp make_snowflake(ip) do
-    :crypto.hash(:sha256, ip)
-    |> Base.encode64()
   end
 end

@@ -7,6 +7,7 @@ defmodule RateTheDub.Anime.VoiceActor do
   use Ecto.Schema
 
   @primary_key false
+  @derive Jason.Encoder
   embedded_schema do
     field :mal_id, :integer, primary_key: true
     field :name, :string

@@ -1,15 +1,3 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/search_seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     RateTheDub.Repo.insert!(%RateTheDub.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
-
 # ========== WARNING ==========
 # In order to respect Jikan's rate limits this script will wait in-between
 # requests. That means that it will take at least a few minutes to run and seed
@@ -51,4 +39,3 @@ for term <- search_terms do
 
   :timer.sleep(sleep_time)
 end
-

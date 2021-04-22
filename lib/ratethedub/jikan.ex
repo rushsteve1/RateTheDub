@@ -47,7 +47,7 @@ defmodule RateTheDub.Jikan do
   """
   @spec get_series_json!(id :: integer) :: map
   def get_series_json!(id) when is_integer(id) do
-    get!("/anime/#{id}/", opts: [cache: false]).body
+    get!("/anime/#{id}", opts: [cache: false]).body
   end
 
   @doc """

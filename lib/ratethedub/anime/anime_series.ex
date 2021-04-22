@@ -8,6 +8,7 @@ defmodule RateTheDub.Anime.AnimeSeries do
   alias RateTheDub.Anime.VoiceActor
 
   @primary_key false
+  @derive {Jason.Encoder, except: [:__meta__, :votes]}
   schema "anime" do
     field :dubbed_in, {:array, :string}
     field :featured_in, :string
