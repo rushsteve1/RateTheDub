@@ -1,6 +1,11 @@
 # Taken and adapted from
 # https://medium.com/@gottfrois/github-actions-for-elixir-phoenix-app-with-cache-6ca33f628459
 
+# TODO at later dates
+# - Update OTP to 24
+# - Update Elixir to 1.12
+# - Update Ubuntu to latest
+
 name: Elixir CI
 
 on:
@@ -15,7 +20,7 @@ env:
 jobs:
   deps:
     name: Dependencies
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
         elixir: [1.11]
@@ -62,7 +67,7 @@ jobs:
   static_code_analysis:
     name: Static Code Analysis
     needs: deps
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
         elixir: [1.11]
@@ -108,7 +113,7 @@ jobs:
   unit_tests:
     name: Unit Tests
     needs: deps
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
       matrix:

@@ -2,10 +2,16 @@
 
 > Was the dub for that anime any good?
 
+[![GitHub CI](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml/badge.svg)](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml)
+
 RateTheDub is a site where you can view and vote on whether or not the dub for
 various anime series was any good. Its goal is to the need for random searching
 and browsing random forum posts when trying to figure out if the dub for an
 anime was worth watching.
+
+This project use the [Jikan.moe](https://jikan.moe) API for
+[MyAnimeList](https://myanimelist.net), so a huge shoutout and thank you to them
+for all their hard work!
 
 ## Additional Documentation
 
