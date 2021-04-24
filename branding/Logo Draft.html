@@ -1,0 +1,107 @@
+<html>
+  <style>
+    :root {
+      /* https://coolors.co/2d3142-bfc0c0-ffffff-ef8354-4f5d75-646f4b-e85f5c */
+      --space-cadet: #2d3142ff;
+      --silver: #bfc0c0ff;
+      --white: #ffffffff;
+      --mandarin: #ef8354ff;
+      --independence: #4f5d75ff;
+      --dark-olive-green: #646f4bff;
+      --fire-opal: #e85f5cff;
+    }
+
+    body {
+      font-family: "Poppins";
+
+      background: var(--white);
+      color: var(--space-cadet);
+
+      /* color: var(--white);
+          background: var(--space-cadet); */
+    }
+    .box {
+      font-weight: bold;
+      padding: 0 0.3em;
+      border-radius: 0.05em;
+      color: white;
+    }
+    .rate {
+      background: var(--mandarin);
+      /* border-top: 0.05em solid var(--independence);
+          border-bottom: 0.05em solid var(--independence); */
+    }
+    .dub {
+      background: var(--independence);
+      /* border-top: 0.05em solid var(--mandarin);
+          border-bottom: 0.05em solid var(--mandarin); */
+    }
+    .container {
+      font-size: 500%;
+      display: inline-flex;
+      padding: 2rem;
+      align-items: center;
+    }
+  </style>
+  <body>
+    <div class="container" style="flex-direction: row">
+      <span class="box rate">Rate</span>
+      <small style="margin: 0 0.5rem">the</small>
+      <span class="box dub">Dub</span>
+    </div>
+
+    <hr />
+
+    <div class="container" style="flex-direction: column">
+      <span class="box rate" style="width: 2.5em; text-align: center"
+        >Rate</span
+      >
+      <small style="margin: -1rem">the</small>
+      <span class="box dub" style="width: 2.5em; text-align: center">
+        <span>Dub</span>
+      </span>
+    </div>
+
+    <hr />
+
+    <div class="container" style="flex-direction: row">
+      <span
+        class="box rate"
+        style="border-top-right-radius: 0; border-bottom-right-radius: 0"
+        >R</span
+      >
+      <small style="color: #fdfffc; z-index: 10; margin: -0.75rem">t</small>
+      <span
+        class="box dub"
+        style="border-top-left-radius: 0; border-bottom-left-radius: 0"
+        >D</span
+      >
+    </div>
+
+    <hr />
+
+    <div style="max-width: 40rem; margin: auto">
+      <h1>
+        Lorem ipsum
+        <span style="color: var(--dark-olive-green)">dolor</span> sit amet
+      </h1>
+      <h2>consectetur adipiscing elit</h2>
+      <p>
+        Morbi egestas erat eget lobortis pulvinar. Nunc id euismod sapien, eu
+        aliquet mi. Integer mollis, mauris ac cursus gravida, velit lacus
+        viverra odio, vitae rhoncus orci est nec odio. Integer vitae tellus
+        nunc. Proin quis pretium magna.
+        <span style="color: var(--fire-opal)">
+          Duis semper id quam quis rhoncus. Vestibulum aliquet sagittis
+          volutpat.
+        </span>
+        Aenean eget risus erat. Pellentesque arcu est, laoreet id velit sit
+        amet, varius luctus enim. Aenean ipsum erat, facilisis placerat tempor
+        id, tincidunt a risus. Sed sit amet egestas dolor. Nulla congue
+        imperdiet tincidunt. Donec nec risus ac sapien aliquam mattis vel id
+        nisi. Donec dapibus libero at rhoncus semper. In sapien tellus, placerat
+        a ullamcorper vitae, aliquet vitae eros.
+      </p>
+    </div>
+  </body>
+</html>

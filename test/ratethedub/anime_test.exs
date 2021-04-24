@@ -42,9 +42,9 @@ defmodule RateTheDub.AnimeTest do
       anime_series
     end
 
-    test "list_anime/0 returns all anime" do
+    test "list_anime_series/0 returns all anime" do
       anime_series = anime_series_fixture()
-      assert Anime.list_anime() == [anime_series]
+      assert Anime.list_anime_series() == [anime_series]
     end
 
     test "get_anime_series!/1 returns the anime_series with given id" do

@@ -10,9 +10,9 @@ name: Elixir CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
   MIX_ENV: test
@@ -61,9 +61,10 @@ jobs:
           mix deps.get
           mix deps.compile
           mix dialyzer --plt
-          
+          MIX_ENV=dev mix dialyzer --plt
+
   ### --- ###
-  
+
   static_code_analysis:
     name: Static Code Analysis
     needs: deps
@@ -99,17 +100,22 @@ jobs:
             priv/plts
           key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('mix.lock') }}
 
+      - name: Fake Prettier Installation
+        run: |
+          mkdir -p ./assets/node_modules/.bin/
+          cp /bin/true ./assets/node_modules/.bin/prettier
+
       - name: Check Code Format
         run: mix format --check-formatted
 
       - name: Run Credo
-        run: mix credo
+        run: mix credo -i todo
 
       - name: Run Dialyzer
-        run: mix dialyzer --no-check --halt-exit-status
-          
+        run: MIX_ENV=dev mix dialyzer --no-check --halt-exit-status
+
   ### --- ###
-  
+
   unit_tests:
     name: Unit Tests
     needs: deps
@@ -119,6 +125,19 @@ jobs:
       matrix:
         elixir: [1.11]
         otp: [23.2]
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.6.0
@@ -145,6 +164,9 @@ jobs:
             _build
             priv/plts
           key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('mix.lock') }}
+
+      - name: Setup Database
+        run: mix do ecto.create, ecto.migrate
 
       - name: Run test
         run: mix test --trace --slowest 10
