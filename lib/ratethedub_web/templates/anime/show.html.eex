@@ -1,90 +1,125 @@
-<article>
-  <div class="flex flex-row flex-wrap justify-center space-x-2">
-    <section>
-      <img src="<%= @series.poster_url %>" />
-      <a
-        href="<%= RateTheDub.Anime.AnimeSeries.to_url @series %>"
-        target="_blank"
-        class="block text-center text-lg w-full border-2 rounded-b-md hover:shadow"
-      >
-        View on MyAnimeList
-      </a>
-    </section>
+<article class="flex flex-col md:mx-24 lg:mx-32 md:flex-row md:align-center">
+  <section>
+    <img src="<%= @series.poster_url %>" />
 
-    <section class="flex-grow">
-      <%= if @locale in @series.dubbed_in do %>
-        <h2 class="text-center text-4xl">
-          <div>
-            <%= gettext "Is the" %>
-            <span><%= RateTheDub.Locale.locale_own_name @locale %></span>
-            <%= gettext "dub for" %>
-          </div>
-          <div><%= @series.title %></div>
-          <div>
-            <%= gettext "any good?" %>
-          </div>
-        </h2>
+    <a
+      href="<%= RateTheDub.Anime.AnimeSeries.to_url @series %>"
+      target="_blank"
+      class="block text-center p-2 bg-independence text-white font-bold rounded-sm shadow hover:shadow-md"
+    >
+      View on MyAnimeList
+    </a>
 
-        <div class="text-center text-2xl my-4">
-          <%= if @count > 0 do %>
-            <%= gettext "%{count} people think so", count: @count %>
-          <% else %>
-            <%= gettext "No one has voted for this yet..." %>
-          <% end %>
+    <%= if @series.featured_in == @locale do %>
+      <div class="bg-mandarin p-2 text-center text-white font-bold rounded-sm">
+        <%= gettext "This dub is featured!" %>
+      </div>
+    <% end %>
+  </section>
+
+  <section class="flex-grow mx-4">
+    <%= if @locale in @series.dubbed_in do %>
+      <h2 class="text-center text-4xl font-semibold">
+        <div>
+          <%= gettext "Is the" %>
+          <span
+            class="text-dark-olive"
+          ><%= RateTheDub.Locale.locale_own_name @locale %></span>
+          <%= gettext "dub for" %>
         </div>
+        <div class="text-mandarin"><%= @series.title %></div>
+        <div>
+          <%= gettext "any good?" %>
+        </div>
+      </h2>
 
-        <%= if @series.featured_in == @locale do %>
-          <%= gettext "This dub is featured!" %>
+      <div class="text-center text-2xl my-4">
+        <%= if @count > 0 do %>
+          <%= gettext "%{count} people think so", count: @count %>
+        <% else %>
+          <%= gettext "No one has voted for this yet..." %>
         <% end %>
+      </div>
 
-        <div
-          class="w-full md:w-max mx-auto p-2 bg-blue-400 border-2 border-blue-600 shadow hover:shadow-md"
-        >
-          <%= if @has_voted do %>
-            <span class="cursor-not-allowed">You've already voted</span>
-          <% else %>
-            <%= form_for @conn, Routes.anime_path(@conn, :vote, @locale, @series.mal_id), [name: :vote, method: :post, data_swup_form: true], fn _ -> %>
-              <%= submit "Vote Up" %>
-            <% end %>
+      <div
+        class="w-full md:w-max mx-auto p-2 bg-independence rounded-sm text-center shadow hover:shadow-md"
+      >
+        <%= if @has_voted do %>
+          <span
+            class="cursor-not-allowed text-white font-bold"
+          ><%= gettext "You've already voted" %></span>
+        <% else %>
+          <%= form_for @conn, Routes.anime_path(@conn, :vote, @locale, @series.mal_id), [name: :vote, method: :post, data_swup_form: true], fn _ -> %>
+            <%= submit "Vote Up", class: "text-white font-bold text-3xl" %>
           <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <h2 class="text-center text-4xl">
+        <div><%= @series.title %></div>
+        <div>
+          <span><%= gettext "is not dubbed in" %></span>
+          <span><%= RateTheDub.Locale.locale_own_name @locale %></span>
         </div>
-      <% else %>
-        <h2 class="text-center text-4xl">
-          <div><%= @series.title %></div>
-          <div>
-            <span><%= gettext "is not dubbed in" %></span>
-            <span><%= RateTheDub.Locale.locale_own_name @locale %></span>
-          </div>
-        </h2>
-      <% end %>
+      </h2>
+    <% end %>
+
+    <div class="flex flex-col md:flex-row justify-around m-auto mt-6">
+      <div>
+        <h3 class="text-xl">
+          <span class="text-mandarin"><%= @series.title %></span>
+          <span><%= gettext "is also dubbed in..." %></span>
+        </h3>
+        <table class="w-full">
+          <thead>
+            <tr>
+              <th>Language</th>
+              <th>Votes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= for lang <- @series.dubbed_in do %>
+              <tr>
+                <td>
+                  <%= RateTheDub.Locale.code_to_locale_name @locale, lang %>
+                </td>
+                <td><%= Map.get(@all_counts, lang, 0) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
 
       <div>
-        <h3><%= gettext "This series is also dubbed in..." %></h3>
-        <ul>
-          <%= for lang <- @series.dubbed_in do %>
-            <li><%= lang %> -> <%= Map.get(@all_counts, lang, 0) %></li>
-          <% end %>
-        </ul>
-      </div>
-    </section>
-  </div>
+        <h3 class="text-xl">
+          <%= RateTheDub.Locale.locale_own_name @locale %>
+          <%= gettext "Voice Actors" %>
+        </h3>
+        <table class="w-full">
+          <thead>
+            <tr>
+              <th>Actor</th>
+              <th>Character</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= for actor <- @actors do %>
+              <tr>
+                <td>
+                  <%= link actor.name, to: RateTheDub.Anime.VoiceActor.to_url(actor), target: "_blank" %>
+                </td>
+                <td><%= actor.character %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
 
-  <section>
-    <h2>Voice Actors</h2>
-    <ul>
-      <%= for actor <- @actors do %>
-        <li>
-          <%= link actor.name, to: RateTheDub.Anime.VoiceActor.to_url(actor), target: "_blank" %>
-          <small><%= actor.character %></small>
-        </li>
-      <% end %>
-      <li>
         <a
-          href="<%= RateTheDub.Anime.AnimeSeries.to_url @series %>/characters"
+          href="<%= RateTheDub.Anime.AnimeSeries.to_url @series %>characters"
           target="_blank"
           >View the Rest</a
         >
-      </li>
-    </ul>
+      </div>
+    </div>
   </section>
 </article>

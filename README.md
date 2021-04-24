@@ -2,7 +2,7 @@
 
 [![GitHub CI](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml/badge.svg)](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml)
 
-> Was the dub for that anime any good?
+> Is the dub for that anime any good?
 
 RateTheDub is a site where you can view and vote on whether or not the dub for
 various anime series was any good. Its goal is to the need for random searching

@@ -1,28 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <title>
+      RateTheDub
+      <%= if assigns[:series] do %>
+        <%= "- " <> @series.title %>
+      <% end %>
+    </title>
+
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RateTheDub</title>
-    <meta name="description" content="Was the dub for that anime any good?" />
+    <meta name="og:site_name" content="RateTheDub" />
+    <meta
+      name="og:image"
+      content="<%= Routes.static_path(@conn, "/images/og-logo.png") %>"
+    />
+    <%= if assigns[:locale] do %>
+      <meta name="og:locale" content="<%= @locale %>" />
+    <% end %>
+
+    <%= if assigns[:series] && assigns[:locale] do %>
+      <meta
+        name="description"
+        content="<%= gettext "Is the %{lang} dub for %{title} any good?", lang: RateTheDub.Locale.locale_own_name(@locale), title: @series.title %>"
+      />
+    <% else %>
+      <meta
+        name="description"
+        content="<%= gettext "Is the dub for that anime any good?" %>"
+      />
+    <% end %>
+
     <link
       rel="stylesheet"
       href="<%= Routes.static_path(@conn, "/css/app.css") %>"
     />
+
     <script
       defer
       type="text/javascript"
       src="<%= Routes.static_path(@conn, "/js/app.js") %>"
     ></script>
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/images/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/images/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/images/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
   </head>
-  <body class="dark:bg-gray-700 dark:text-gray-200">
-    <header class="p-4 sticky flex flex-row flex-nowrap justify-between">
+  <body
+    class="flex flex-col min-h-screen text-space-cadet dark:text-white bg-white dark:bg-space-cadet"
+  >
+    <header
+      class="p-4 sticky flex flex-col text-center md:flex-row flex-nowrap justify-between"
+    >
       <a
         href="<%= Routes.page_path(@conn, :index, @locale) %>"
         class="align-middle"
       >
-        <h1>RateTheDub</h1>
+        <h1 class="text-4xl mb-4 md:mb-0 md:text-2xl md:w-full">
+          <span class="bg-mandarin text-white font-bold rounded-sm px-1.5"
+            >Rate</span
+          >
+          <small style="margin: 0 -0.2rem">the</small>
+          <span class="bg-independence text-white font-bold rounded-sm px-1.5"
+            >Dub</span
+          >
+        </h1>
       </a>
 
       <section class="inline align-middle">
@@ -35,7 +95,7 @@
       <%= link "About", to: Routes.page_path(@conn, :about, @locale), class: "align-middle" %>
     </header>
 
-    <main id="swup" role="main" class="container mx-auto">
+    <main id="swup" role="main" class="container flex-grow mx-auto">
       <p class="bold text-center bg-blue-300 m-4" role="alert">
         <%= get_flash(@conn, :info) %>
       </p>
@@ -45,7 +105,10 @@
       <%= @inner_content %>
     </main>
 
-    <footer class="flex flex-row justify-end p-4">
+    <footer class="flex flex-col md:flex-row justify-between p-4">
+      <a href="https://github.com/rushsteve1/RateTheDub" target="_blank">
+        <%= gettext "Contribute on %{gh}", gh: "GitHub" %>
+      </a>
       <select name="locale">
         <%= for loc <- Gettext.known_locales(RateTheDubWeb.Gettext) do %>
           <option value="<%= loc %>">
@@ -53,10 +116,9 @@
           </option>
         <% end %>
       </select>
-      <p class="mx-4">
-        <%= gettext "Data provided by" %>
-        <a href="https://jikan.moe">Jikan</a>
-      </p>
+      <a href="https://jikan.moe" target="_blank">
+        <%= gettext "Data provided by %{jikan}", jikan: "Jikan" %>
+      </a>
       <nav>
         <a href="/about#contact"><%= gettext "Contact" %></a>
         <a href="/about#feedback"><%= gettext "Feedback" %></a>

@@ -58,7 +58,8 @@ defmodule RateTheDub.Locale do
   def code_to_en_name(code) when is_binary(code) do
     @en_langs
     |> Map.new(fn {k, v} -> {v, k} end)
-    |> Map.get(String.downcase(code)) || code
+    |> Map.get(code, code)
+    |> String.capitalize()
   end
 
   @doc """

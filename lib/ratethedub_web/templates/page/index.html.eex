@@ -1,10 +1,16 @@
-<div id="jumbo" class="text-4xl text-center my-8">
-  <%= gettext("Was the %{lang} dub for that anime any good?", lang: RateTheDub.Locale.locale_own_name(@locale)) %>
+<div id="jumbo" class="text-4xl font-semibold text-center my-8">
+  <%= gettext "Is the" %>
+  <span class="text-dark-olive">
+    <%= RateTheDub.Locale.locale_own_name @locale %>
+  </span>
+  <%= gettext "dub for" %>
+  <span class="text-mandarin"><%= gettext "that anime" %></span>
+  <%= gettext "any good?" %>
 </div>
 
 <section class="grid grid-cols-1 md:grid-cols-3 grid-rows-1">
   <section>
-    <h2 class="text-center"><%= gettext "Featured" %></h2>
+    <h2 class="text-center text-xl"><%= gettext "Featured" %></h2>
     <ul>
       <%= for anime <- @featured do %>
         <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
@@ -14,7 +20,7 @@
               title="<%= anime.title %>"
               class="inline-block max-h-full"
             />
-            <%= anime.title %>
+            <span class="flex-grow px-2 truncate"><%= anime.title %></span>
           </li>
         </a>
       <% end %>
@@ -22,7 +28,7 @@
   </section>
 
   <section>
-    <h2 class="text-center"><%= gettext "Trending" %></h2>
+    <h2 class="text-center text-xl"><%= gettext "Trending" %></h2>
     <ul>
       <%= for anime <- @trending do %>
         <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
@@ -32,7 +38,7 @@
               title="<%= anime.title %>"
               class="inline-block max-h-full"
             />
-            <%= anime.title %>
+            <span class="flex-grow px-2 truncate"><%= anime.title %></span>
           </li>
         </a>
       <% end %>
@@ -40,7 +46,7 @@
   </section>
 
   <section>
-    <h2 class="text-center"><%= gettext "Top Rated" %></h2>
+    <h2 class="text-center text-xl"><%= gettext "Top Rated" %></h2>
     <ul>
       <%= for [anime, count] <- @top_rated do %>
         <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
@@ -51,7 +57,11 @@
               class="inline-block max-h-full"
             />
             <span class="flex-grow px-2 truncate"><%= anime.title %></span>
-            <span class="px-3 bg-blue-200 font-bold"><%= count %></span>
+            <div
+              class="px-3 bg-independence text-white font-bold h-full flex flex-col justify-center align-center"
+            >
+              <span><%= count %></span>
+            </div>
           </li>
         </a>
       <% end %>

@@ -22,7 +22,7 @@ defmodule RateTheDubWeb.Endpoint do
     at: "/",
     from: :ratethedub,
     gzip: true,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(css fonts images js favicon.ico robots.txt site.webmanifest browserconfig.xml)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
