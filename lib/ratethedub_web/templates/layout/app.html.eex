@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <title>
-      RateTheDub
-      <%= if assigns[:series] do %>
-        <%= "- " <> @series.title %>
-      <% end %>
+      RateTheDub<%= if assigns[:series], do: " - " <> @series.title %>
     </title>
 
     <meta charset="utf-8" />

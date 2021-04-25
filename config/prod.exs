@@ -13,8 +13,8 @@ config :ratethedub, RateTheDubWeb.Endpoint,
   url: [host: "ratethedub.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
-# Do not print debug messages in production
-config :logger, level: :info
+# Do not print debug or info messages in production
+config :logger, level: :warning
 
 # ## SSL Support
 #

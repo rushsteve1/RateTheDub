@@ -9,9 +9,36 @@ defmodule RateTheDubWeb.AnimeController do
   @cookie_name "snowflake"
 
   def show(conn, %{"id" => id}) do
+    id = String.to_integer(id)
     {ip, snowflake} = user_info(conn)
 
+    render_series(conn, id, ip, snowflake)
+  end
+
+  def vote(conn, %{"id" => id}) do
     id = String.to_integer(id)
+    {ip, snowflake} = user_info(conn)
+    has_voted = DubVotes.has_voted_for(id, conn.assigns.locale, ip, snowflake)
+
+    if has_voted do
+      conn = put_flash(conn, :error, gettext("You've already voted for this"))
+    else
+      DubVotes.create_vote(%{
+        mal_id: id,
+        language: conn.assigns.locale,
+        user_ip: ip,
+        user_snowflake: snowflake
+      })
+
+      put_flash(conn, :info, gettext("Vote Recorded"))
+    end
+
+    conn
+    |> put_resp_cookie(@cookie_name, snowflake, max_age: @six_months, encrypt: true)
+    |> render_series(id, ip, snowflake)
+  end
+
+  defp render_series(conn, id, ip, snowflake) when is_integer(id) do
     series = Anime.get_or_create_anime_series!(id)
     count = DubVotes.count_votes_for(id, conn.assigns.locale)
     all_counts = DubVotes.count_all_votes_for(id)
@@ -25,32 +52,6 @@ defmodule RateTheDubWeb.AnimeController do
       all_counts: all_counts,
       actors: actors
     )
-  end
-
-  def vote(conn, %{"id" => id}) do
-    {ip, snowflake} = user_info(conn)
-    has_voted = DubVotes.has_voted_for(id, conn.assigns.locale, ip, snowflake)
-    series = Anime.get_anime_series!(id)
-    count = DubVotes.count_votes_for(id, conn.assigns.locale)
-    all_counts = DubVotes.count_all_votes_for(id)
-
-    if has_voted do
-      conn
-      |> put_flash(:error, gettext("You've already voted for this"))
-    else
-      %{
-        mal_id: id,
-        language: conn.assigns.locale,
-        user_ip: ip,
-        user_snowflake: snowflake
-      }
-      |> DubVotes.create_vote()
-
-      conn
-      |> put_flash(:info, gettext("Vote Recorded"))
-    end
-    |> put_resp_cookie(@cookie_name, snowflake, max_age: @six_months, encrypt: true)
-    |> render("show.html", has_voted: true, series: series, count: count, all_counts: all_counts)
   end
 
   defp user_info(conn) do
