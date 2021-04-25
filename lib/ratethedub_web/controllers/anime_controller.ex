@@ -20,18 +20,19 @@ defmodule RateTheDubWeb.AnimeController do
     {ip, snowflake} = user_info(conn)
     has_voted = DubVotes.has_voted_for(id, conn.assigns.locale, ip, snowflake)
 
-    if has_voted do
-      conn = put_flash(conn, :error, gettext("You've already voted for this"))
-    else
-      DubVotes.create_vote(%{
-        mal_id: id,
-        language: conn.assigns.locale,
-        user_ip: ip,
-        user_snowflake: snowflake
-      })
+    conn =
+      if has_voted do
+        put_flash(conn, :error, gettext("You've already voted for this"))
+      else
+        DubVotes.create_vote(%{
+          mal_id: id,
+          language: conn.assigns.locale,
+          user_ip: ip,
+          user_snowflake: snowflake
+        })
 
-      put_flash(conn, :info, gettext("Vote Recorded"))
-    end
+        put_flash(conn, :info, gettext("Vote Recorded"))
+      end
 
     conn
     |> put_resp_cookie(@cookie_name, snowflake, max_age: @six_months, encrypt: true)
