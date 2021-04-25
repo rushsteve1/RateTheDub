@@ -39,7 +39,19 @@ defmodule RateTheDubWeb.APIController do
   end
 
   def trending(conn, _params) do
+    data =
+      Anime.get_trending()
+      |> Enum.map(fn [id, lang, votes] ->
+        %{
+          type: "series_lang_votes",
+          id: id,
+          attributes: %{mal_id: id, language: lang, votes: votes},
+          links: %{self: "https://ratethedub.com/#{lang}/anime/#{id}"}
+        }
+      end)
+
     conn
+    |> json(Map.put(@base_attrs, :data, data))
   end
 
   def top(conn, _params) do

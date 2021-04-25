@@ -30,7 +30,7 @@
   <section>
     <h2 class="text-center text-xl"><%= gettext "Trending" %></h2>
     <ul>
-      <%= for anime <- @trending do %>
+      <%= for [anime, count] <- @top_rated do %>
         <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
           <li class="list-series-item w-80">
             <img
@@ -39,6 +39,11 @@
               class="inline-block max-h-full"
             />
             <span class="flex-grow px-2 truncate"><%= anime.title %></span>
+            <div
+              class="px-3 bg-independence text-white font-bold h-full flex flex-col justify-center align-center"
+            >
+              <span><%= count %></span>
+            </div>
           </li>
         </a>
       <% end %>

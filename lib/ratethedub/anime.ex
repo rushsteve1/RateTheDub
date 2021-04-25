@@ -83,7 +83,7 @@ defmodule RateTheDub.Anime do
   end
 
   @doc """
-  Gets all the featured series in all languages with no limits
+  Gets all the featured series in all languages with no limits.
   """
   def get_featured() do
     AnimeSeries
@@ -93,7 +93,7 @@ defmodule RateTheDub.Anime do
   end
 
   @doc """
-  Gets the top 5 series that are featured in this language
+  Gets the top 5 series that are featured in this language.
 
   ## Examples
 
@@ -108,9 +108,39 @@ defmodule RateTheDub.Anime do
     |> Repo.all()
   end
 
+  @doc """
+  Gets all the top 5 trending series in all languages.
+  """
   def get_trending() do
-    # TODO trending functions
-    nil
+    Vote
+    |> where([v], v.inserted_at > ^month_ago())
+    |> select([v], [v.mal_id, v.language, count(v)])
+    |> group_by([:mal_id, :language])
+    |> order_by([v], asc: v.language, desc: count(v))
+    |> Repo.all()
+    |> Stream.chunk_by(fn [_, lang, _] -> lang end)
+    |> Enum.flat_map(&Enum.take(&1, @limit))
+  end
+
+  @doc """
+  Gets all the top 5 tredning series in this language.
+  """
+  def get_trending_for(lang) do
+    Vote
+    |> where(language: ^lang)
+    |> where([v], v.inserted_at > ^month_ago())
+    |> select([v], [v.mal_id, count(v)])
+    |> order_by([v], desc: count(v))
+    |> group_by(:mal_id)
+    |> limit(@limit)
+    |> Repo.all()
+    |> Enum.map(fn [id, count] -> [RateTheDub.Anime.get_anime_series!(id), count] end)
+  end
+
+  defp month_ago() do
+    NaiveDateTime.local_now()
+    |> Date.add(-30)
+    |> NaiveDateTime.new!(~T[00:00:00])
   end
 
   @doc """

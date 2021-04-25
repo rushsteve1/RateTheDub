@@ -5,7 +5,7 @@ defmodule RateTheDubWeb.PageController do
 
   def index(conn, _params) do
     featured = Anime.get_featured_for(conn.assigns.locale)
-    trending = []
+    trending = Anime.get_trending_for(conn.assigns.locale)
     top_rated = Anime.get_top_rated_for(conn.assigns.locale)
 
     render(

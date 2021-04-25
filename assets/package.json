@@ -8,7 +8,8 @@
   "license": "Apache-2.0",
   "scripts": {
     "deploy": "NODE_ENV=production webpack --mode production",
-    "watch": "NODE_ENV=development webpack --mode development --watch --watch-options-stdin"
+    "watch": "NODE_ENV=development webpack --mode development --watch --watch-options-stdin",
+    "format": "prettier --write . --color --ignore-path ../.gitignore --loglevel warn"
   },
   "dependencies": {
     "@fontsource/poppins": "^4.2.2",
