@@ -73,7 +73,40 @@ Each language has at most 5 trending series.
 #### Example Response
 
 ```
-
+{
+  data: [
+    {
+      "attributes": {
+        "language": "pt_BR",
+        "mal_id": 6,
+        "votes": 6
+      },
+      "id": 6,
+      "links": {
+        "self": "https://ratethedub.com/pt_BR/anime/6"
+      },
+      "type": "series_lang_votes"
+    },
+    {
+      "attributes": {
+        "language": "pt_BR",
+        "mal_id": 5114,
+        "votes": 5
+      },
+      "id": 5114,
+      "links": {
+        "self": "https://ratethedub.com/pt_BR/anime/5114"
+      },
+      "type": "series_lang_votes"
+    }
+  ],
+  "jsonapi": {
+    "version": "1.0"
+  },
+  "links": {
+    "self": "https://ratethedub.com/"
+  }
+}
 ```
 
 ## Top Rated Series
