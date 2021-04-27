@@ -1,15 +1,3 @@
-<ul>
-  <%= for result <- @results do %>
-    <a href="<%= Routes.anime_path(@conn, :show, @locale, result.mal_id) %>">
-      <li class="list-series-item">
-        <img
-          src="<%= result.poster_url %>"
-          title="<%= result.title %>"
-          class="inline-block max-h-full"
-        />
-        <span><%= result.title %></span>
-        <span></span>
-      </li>
-    </a>
-  <% end %>
-</ul>
+<article class="lg:mx-20 xl:mx-32">
+<%= render RateTheDubWeb.PageView, "series-list.html", conn: @conn, locale: @locale, series: @results |> Enum.map(&[&1, 0]) %>
+</article>

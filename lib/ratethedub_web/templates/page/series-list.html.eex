@@ -1,0 +1,21 @@
+<ul>
+  <%= for [anime, count] <- @series do %>
+    <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
+      <li class="flex h-20 my-4 border-2 border-independence cursor-pointer transition-shadow hover:shadow w-full">
+        <img
+          src="<%= anime.poster_url %>"
+          title="<%= anime.title %>"
+          class="inline-block max-h-full"
+        />
+        <span class="flex-grow px-2 truncate"><%= anime.title %></span>
+        <%= if count > 0 do %>
+        <div
+          class="px-3 bg-independence text-white font-bold h-full flex flex-col justify-center align-center"
+        >
+          <span><%= count %></span>
+        </div>
+        <% end %>
+      </li>
+    </a>
+  <% end %>
+</ul>

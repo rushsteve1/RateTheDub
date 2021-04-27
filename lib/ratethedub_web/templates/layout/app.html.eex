@@ -1,20 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= assigns[:locale] || "en" %>" class="no-js">
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="preload"
+      as="style"
+      href="<%= Routes.static_path(@conn, "/css/app.css") %>"
+    />
+
     <title>
       RateTheDub<%= if assigns[:series], do: " - " <> @series.title %>
     </title>
+    <meta name="og:title" content="RateTheDub<%= if assigns[:series], do: " - " <> @series.title %>" />
 
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="og:site_name" content="RateTheDub" />
+    <meta name="og:type" content="website" />
+    <meta name="og:url" content="https://ratethedub.com" />
+
     <meta
       name="og:image"
-      content="<%= Routes.static_path(@conn, "/images/og-logo.png") %>"
+      content="https://ratethedub.com<%= Routes.static_path(@conn, "/images/og-logo.png") %>"
     />
+    <meta name="og:image:alt" content="RateTheDub Logo" />
+    <meta name="twitter:card" content="summary_large_image">
+
+
     <%= if assigns[:locale] do %>
       <meta name="og:locale" content="<%= @locale %>" />
+      <link rel="canonical" href="https://ratethedub.com<%= String.replace(@conn.request_path, "/" <> @locale, "") %>" />
+    <% else %>
+      <link rel="canonical" href="https://ratethedub.com<%= @conn.request_path %>" />
+    <% end %>
+
+    <% alt_locales = if assigns[:series], do: @series.dubbed_in, else: Gettext.known_locales(RateTheDubWeb.Gettext) %>
+    <% alt_locales = if assigns[:locale], do: List.delete(alt_locales, @locale), else: alt_locales %>
+    <%= for lang <- alt_locales do %>
+      <meta name="og:locale:alternate" content="<%= lang %>" />
     <% end %>
 
     <%= if assigns[:series] && assigns[:locale] do %>
@@ -22,12 +45,25 @@
         name="description"
         content="<%= gettext "Is the %{lang} dub for %{title} any good?", lang: RateTheDub.Locale.locale_own_name(@locale), title: @series.title %>"
       />
+      <meta
+        name="og:description"
+        content="<%= gettext "Is the %{lang} dub for %{title} any good?", lang: RateTheDub.Locale.locale_own_name(@locale), title: @series.title %>"
+      />
     <% else %>
       <meta
         name="description"
         content="<%= gettext "Is the dub for that anime any good?" %>"
       />
+      <meta
+        name="og:description"
+        content="<%= gettext "Is the dub for that anime any good?" %>"
+      />
     <% end %>
+
+    <script type="module">
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+    </script>
 
     <link
       rel="stylesheet"
@@ -40,6 +76,7 @@
       src="<%= Routes.static_path(@conn, "/js/app.js") %>"
     ></script>
 
+    <link rel="icon" href="/favicon.ico" />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -58,14 +95,17 @@
       href="/images/favicon-16x16.png"
     />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="msapplication-TileColor" content="#da532c" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#4f5d75" />
   </head>
   <body
-    class="flex flex-col min-h-screen text-space-cadet dark:text-white bg-white dark:bg-space-cadet"
+    class="h-screen w-screen overflow-x-hidden flex flex-col text-space-cadet dark:text-white bg-white dark:bg-space-cadet"
   >
+    <noscript class="bg-fire-opal text-white text-bold text-center p-2">
+      Heads up! While we try to make RateTheDub work without JS, somethings may break!
+    </noscript>
+
     <header
-      class="p-4 sticky flex flex-col text-center md:flex-row flex-nowrap justify-between"
+      class="p-4 mb-8 flex flex-col md:flex-row flex-nowrap justify-between items-center"
     >
       <a
         href="<%= Routes.page_path(@conn, :index, @locale) %>"
@@ -79,46 +119,66 @@
           <span class="bg-independence text-white font-bold rounded-sm px-1.5"
             >Dub</span
           >
+          &beta;
         </h1>
       </a>
 
-      <section class="inline align-middle">
-        <%= form_for @conn, Routes.search_path(@conn, :index, @locale), [name: :search, method: :get, data_swup_form: true], fn f -> %>
-          <%= text_input f, :q, value: assigns[:q], placeholder: gettext("Search"), class: "w-full md:w-96 p-1" %>
-          <%= submit "Search" %>
-        <% end %>
-      </section>
+      <%= form_for @conn,
+        Routes.search_path(@conn, :index, @locale),
+        [
+          autocomplete: "off",
+          name: :search,
+          method: :get,
+          data_swup_form: true,
+          class: "flex flex-row flex-grow items-center flex-nowrap my-4 max-w-prose md:my-0 md:mx-10 bg-gray-100 dark:bg-independence"
+        ],
+        fn f -> %>
+        <%= text_input f, :q, value: assigns[:q], placeholder: gettext("Search"), class: "p-2 bg-transparent flex-grow w-full" %>
+        <button type="submit" class="p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </button>
+      <% end %>
 
-      <%= link "About", to: Routes.page_path(@conn, :about, @locale), class: "align-middle" %>
+      <div>
+      <%= link "About", to: Routes.page_path(@conn, :about, @locale), class: "hover:underline" %>
+      <%= form_for @conn, "/", [class: "inline"], fn f -> %>
+        <%= select f, :locale, Gettext.known_locales(RateTheDubWeb.Gettext), class: "bg-gray-100 p-1 dark:bg-space-cadet" %>
+      <% end %>
+      </div>
     </header>
 
     <main id="swup" role="main" class="container flex-grow mx-auto">
-      <p class="bold text-center bg-blue-300 m-4" role="alert">
+      <%= if get_flash(@conn, :info) do %>
+      <p class="text-bold text-center text-white bg-dark-olive my-4 mx-auto p-2 w-max max-w-full" role="alert">
         <%= get_flash(@conn, :info) %>
       </p>
-      <p class="bold text-center bg-red-400 m-4" role="alert">
+      <% end %>
+      <%= if get_flash(@conn, :error) do %>
+      <p class="text-bold text-center text-white bg-fire-opal my-4 mx-auto p-2 w-max max-w-full" role="alert">
         <%= get_flash(@conn, :error) %>
       </p>
+      <% end %>
       <%= @inner_content %>
     </main>
 
-    <footer class="flex flex-col md:flex-row justify-between p-4">
+    <footer class="flex flex-col items-center md:flex-row justify-between p-4">
+      <span>Copyright &copy; <%= Date.utc_today().year %></span>
       <a href="https://github.com/rushsteve1/RateTheDub" target="_blank">
         <%= gettext "Contribute on %{gh}", gh: "GitHub" %>
       </a>
-      <select name="locale">
-        <%= for loc <- Gettext.known_locales(RateTheDubWeb.Gettext) do %>
-          <option value="<%= loc %>">
-            <%= loc %>
-          </option>
-        <% end %>
-      </select>
       <a href="https://jikan.moe" target="_blank">
         <%= gettext "Data provided by %{jikan}", jikan: "Jikan" %>
       </a>
       <nav>
-        <a href="/about#contact"><%= gettext "Contact" %></a>
-        <a href="/about#feedback"><%= gettext "Feedback" %></a>
+        <a href="/about#contact" class="mr-4"><%= gettext "Contact" %></a>
+        <a href="/about#feedback" class="mr-4"><%= gettext "Feedback" %></a>
         <a href="/about#donate"><%= gettext "Donate" %></a>
       </nav>
     </footer>

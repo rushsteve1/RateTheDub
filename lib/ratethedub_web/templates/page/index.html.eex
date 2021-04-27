@@ -1,4 +1,4 @@
-<div id="jumbo" class="text-4xl font-semibold text-center my-8">
+<div id="jumbo" class="text-4xl font-semibold text-center mb-8">
   <%= gettext "Is the" %>
   <span class="text-dark-olive">
     <%= RateTheDub.Locale.locale_own_name @locale %>
@@ -8,68 +8,19 @@
   <%= gettext "any good?" %>
 </div>
 
-<section class="grid grid-cols-1 md:grid-cols-3 grid-rows-1">
+<section class="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-10">
   <section>
     <h2 class="text-center text-xl"><%= gettext "Featured" %></h2>
-    <ul>
-      <%= for anime <- @featured do %>
-        <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
-          <li class="list-series-item w-80">
-            <img
-              src="<%= anime.poster_url %>"
-              title="<%= anime.title %>"
-              class="inline-block max-h-full"
-            />
-            <span class="flex-grow px-2 truncate"><%= anime.title %></span>
-          </li>
-        </a>
-      <% end %>
-    </ul>
+    <%= render RateTheDubWeb.PageView, "series-list.html", conn: @conn, locale: @locale, series: @featured %>
   </section>
 
   <section>
     <h2 class="text-center text-xl"><%= gettext "Trending" %></h2>
-    <ul>
-      <%= for [anime, count] <- @top_rated do %>
-        <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
-          <li class="list-series-item w-80">
-            <img
-              src="<%= anime.poster_url %>"
-              title="<%= anime.title %>"
-              class="inline-block max-h-full"
-            />
-            <span class="flex-grow px-2 truncate"><%= anime.title %></span>
-            <div
-              class="px-3 bg-independence text-white font-bold h-full flex flex-col justify-center align-center"
-            >
-              <span><%= count %></span>
-            </div>
-          </li>
-        </a>
-      <% end %>
-    </ul>
+    <%= render RateTheDubWeb.PageView, "series-list.html", conn: @conn, locale: @locale, series: @trending %>
   </section>
 
   <section>
     <h2 class="text-center text-xl"><%= gettext "Top Rated" %></h2>
-    <ul>
-      <%= for [anime, count] <- @top_rated do %>
-        <a href="<%= Routes.anime_path(@conn, :show, @locale, anime.mal_id) %>">
-          <li class="list-series-item w-80">
-            <img
-              src="<%= anime.poster_url %>"
-              title="<%= anime.title %>"
-              class="inline-block max-h-full"
-            />
-            <span class="flex-grow px-2 truncate"><%= anime.title %></span>
-            <div
-              class="px-3 bg-independence text-white font-bold h-full flex flex-col justify-center align-center"
-            >
-              <span><%= count %></span>
-            </div>
-          </li>
-        </a>
-      <% end %>
-    </ul>
+    <%= render RateTheDubWeb.PageView, "series-list.html", conn: @conn, locale: @locale, series: @top_rated %>
   </section>
 </section>

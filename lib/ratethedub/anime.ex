@@ -106,6 +106,7 @@ defmodule RateTheDub.Anime do
     |> where(featured_in: ^lang)
     |> limit(@limit)
     |> Repo.all()
+    |> Enum.map(&[&1, RateTheDub.DubVotes.count_votes_for(&1.mal_id, lang)])
   end
 
   @doc """
