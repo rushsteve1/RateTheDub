@@ -25,6 +25,27 @@ The RateTheDub API, unlike the main site, is **NOT** locale-aware in any way.
 All API requests return the information for ALL locales and languages. There is
 no locale in the URL and no redirects will be made for it.
 
+## Root
+
+**Route**: `/api/`
+
+Returns an empty object with the JSON:API meta attributes. Useful for
+debugging/testing but not much else
+
+#### Example Response
+
+```js
+{
+  "data": {},
+  "jsonapi": {
+    "version": "1.0"
+  },
+  "links": {
+    "self": "https://ratethedub.com/"
+  }
+}
+```
+
 ## Featured Series
 
 **Route**: `/api/featured`
@@ -36,7 +57,7 @@ Each language has at most 5 featured series.
 
 #### Example Response
 
-```
+```js
 {
   "data": [
     {
@@ -72,7 +93,7 @@ Each language has at most 5 trending series.
 
 #### Example Response
 
-```
+``` js
 {
   data: [
     {
@@ -120,7 +141,7 @@ Each language has at most 5 top rated series.
 
 #### Example Response
 
-```
+```js
 {
   "data": [
     {
@@ -179,7 +200,7 @@ database **WILL NOT** create a new entry, and will instead respond with a 404.
 
 #### Example Response
 
-```
+``` js
 {
   "data": {
     "attributes": {

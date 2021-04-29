@@ -26,6 +26,7 @@ defmodule RateTheDubWeb.Router do
   scope "/api", RateTheDubWeb do
     pipe_through :api
 
+    get "/", APIController, :index
     get "/featured", APIController, :featured
     get "/trending", APIController, :trending
     get "/top", APIController, :top

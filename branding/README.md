@@ -13,6 +13,14 @@ versions include:
 The abbreviation **RtD** is also acceptable, but "RTD" with a capital should be
 avoided for clarity.
 
+## Slogan
+
+The official slogan of Rate the Dub is...
+
+> Is the dub for that anime any good?
+
+It should be translated into relevant languages whenever possible.
+
 ## Font
 
 The current font used for both the logo and website is

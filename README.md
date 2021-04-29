@@ -4,7 +4,12 @@
   </a>
 </p>
 
-[![GitHub CI](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml/badge.svg)](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml)
+[![Elixir CI](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml/badge.svg)](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml)
+![GitHub](https://img.shields.io/github/license/rushsteve1/RateTheDub)
+![GitHub repo size](https://img.shields.io/github/repo-size/rushsteve1/RateTheDub)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/rushsteve1/RateTheDub)
+![GitHub issues](https://img.shields.io/github/issues/rushsteve1/RateTheDub)
+![Twitter Follow](https://img.shields.io/twitter/follow/RateTheDub?style=social)
 
 > Is the dub for that anime any good?
 
@@ -41,7 +46,7 @@ Project-level documentation can be found in the [`docs/` folder](./docs).
 
 These are the most important dependencies of this project. The full lists can be
 found in [`mix.exs`](./mix.exs) and
-[`assets/package/json`](./assets/package.json). In no particular order...
+[`assets/package.json`](./assets/package.json). In no particular order...
 
 - [PostgreSQL](https://www.postgresql.org/)
 - [Erlang / BEAM VM and the OTP](https://erlang.org/)

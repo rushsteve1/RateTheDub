@@ -18,6 +18,11 @@ defmodule RateTheDubWeb.APIController do
     links: %{self: "https://ratethedub.com/"}
   }
 
+  def index(conn, _params) do
+    conn
+    |> json(Map.put(@base_attrs, :data, %{}))
+  end
+
   def featured(conn, _params) do
     data =
       Anime.get_featured()
