@@ -5,11 +5,11 @@
 </p>
 
 [![Elixir CI](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml/badge.svg)](https://github.com/rushsteve1/RateTheDub/actions/workflows/elixir.yml)
-![GitHub](https://img.shields.io/github/license/rushsteve1/RateTheDub)
-![GitHub repo size](https://img.shields.io/github/repo-size/rushsteve1/RateTheDub)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/rushsteve1/RateTheDub)
-![GitHub issues](https://img.shields.io/github/issues/rushsteve1/RateTheDub)
-![Twitter Follow](https://img.shields.io/twitter/follow/RateTheDub?style=social)
+[![GitHub](https://img.shields.io/github/license/rushsteve1/RateTheDub)](./LICENSE)
+[![GitHub repo size](https://img.shields.io/github/repo-size/rushsteve1/RateTheDub)](#)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/rushsteve1/RateTheDub)](https://github.com/rushsteve1/RateTheDub/pulls)
+[![GitHub issues](https://img.shields.io/github/issues/rushsteve1/RateTheDub)](https://github.com/rushsteve1/RateTheDub/issues)
+[![Twitter Follow](https://img.shields.io/twitter/follow/RateTheDub?style=social)](https://twitter.com/RateTheDub)
 
 > Is the dub for that anime any good?
 
