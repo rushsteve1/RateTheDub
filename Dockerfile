@@ -1,50 +1,75 @@
-# Taken and adapted from: https://hexdocs.pm/phoenix/releases.html#containers
-# to not use releases and to be a single stage build
+# Taken and adapted from
+# https://fly.io/docs/getting-started/elixir/
 
-FROM elixir:alpine
+###
+### First Stage - Building the Release
+###
+FROM elixir:alpine AS build
 
-# Install dependencies
-RUN apk add --no-cache npm
+# install build dependencies
+RUN apk add --no-cache build-base npm
 
-# Prepare dir
+# prepare build dir
 WORKDIR /app
 
-ENV HOME=/app
-
-# Install hex + rebar
+# install hex + rebar
 RUN mix local.hex --force && \
     mix local.rebar --force
 
-# Set ENV variables
-ENV MIX_ENV prod
+# set build ENV as prod
+ENV MIX_ENV=prod
+ENV SECRET_KEY_BASE=nokey
 
-# Blank expected variables that will be overriden
-ENV DATABASE_URL ""
-ENV SECRET_KEY_BASE ""
-
-# Install mix dependencies
+# Copy over the mix.exs and mix.lock files to load the dependencies. If those
+# files don't change, then we don't keep re-fetching and rebuilding the deps.
 COPY mix.exs mix.lock ./
 COPY config config
-RUN mix do deps.get --only prod, deps.compile
 
-# Copy and compile
-COPY lib lib
-RUN mix compile
+RUN mix deps.get --only prod && \
+    mix deps.compile
 
-# Install NPM depdendencies
+# install npm dependencies
 COPY assets/package.json assets/package-lock.json ./assets/
 RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
 
-# Build assets
 COPY priv priv
 COPY assets assets
-RUN npm run --prefix ./assets deploy && \
-    mix phx.digest
 
-# Drop permissions
-RUN chown -R nobody:nobody /app
+# NOTE: If using TailwindCSS, it uses a special "purge" step and that requires
+# the code in `lib` to see what is being used.
+COPY lib lib
+
+# build assets
+RUN npm run --prefix ./assets deploy
+RUN mix phx.digest
+
+# compile and build release
+COPY rel rel
+RUN mix do compile, release
+
+###
+### Second Stage - Setup the Runtime Environment
+###
+
+# prepare release docker image
+FROM alpine AS app
+
+RUN apk add --no-cache openssl ncurses-libs
+
+WORKDIR /app
+
+RUN chown nobody:nobody /app
+
 USER nobody:nobody
 
-# Run the server
-EXPOSE 4000
-CMD ["mix", "phx.server"]
+COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/ratethedub ./
+
+ADD entrypoint.sh ./
+
+ENV HOME=/app
+ENV MIX_ENV=prod
+ENV SECRET_KEY_BASE=nokey
+ENV PORT=4000
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["bin/ratethedub", "start"]
