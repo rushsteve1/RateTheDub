@@ -9,7 +9,8 @@ use Mix.Config
 
 config :ratethedub,
   namespace: RateTheDub,
-  ecto_repos: [RateTheDub.Repo]
+  ecto_repos: [RateTheDub.Repo],
+  goatcounter_token: nil
 
 # Configures the endpoint
 config :ratethedub, RateTheDubWeb.Endpoint,

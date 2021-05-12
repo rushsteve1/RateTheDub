@@ -8,9 +8,13 @@ defmodule RateTheDubWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
 
+    plug RateTheDubWeb.PublicIpPlug
+
     plug SetLocale,
       gettext: RateTheDubWeb.Gettext,
       default_locale: "en"
+
+    plug RateTheDubWeb.GoatcounterPlug
   end
 
   pipeline :api do
@@ -19,6 +23,8 @@ defmodule RateTheDubWeb.Router do
 
   pipeline :sitemap do
     plug :accepts, ["xml"]
+    plug RateTheDubWeb.PublicIpPlug
+    plug RateTheDubWeb.GoatcounterPlug
   end
 
   # Due to conflicts with the locale redirection system this must come before

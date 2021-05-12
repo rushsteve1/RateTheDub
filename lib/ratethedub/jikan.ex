@@ -13,7 +13,7 @@ defmodule RateTheDub.Jikan do
   alias RateTheDub.Anime.VoiceActor
 
   plug Tesla.Middleware.BaseUrl, "https://api.jikan.moe/v3"
-  # plug Tesla.Middleware.Timeout, timeout: 2_000
+  plug Tesla.Middleware.Timeout, timeout: 2_000
   plug Tesla.Middleware.Retry
   plug Tesla.Middleware.FollowRedirects
   plug Tesla.Middleware.Logger, debug: false

@@ -9,6 +9,11 @@
 import Config
 
 if config_env() == :prod do
+  goatcounter_token = System.get_env("GOATCOUNTER_TOKEN")
+
+  config :ratethedub,
+    goatcounter_token: goatcounter_token
+
   secret_key_base =
     System.get_env("SECRET_KEY_BASE") ||
       raise """
