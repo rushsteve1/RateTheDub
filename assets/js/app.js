@@ -20,12 +20,18 @@ import "../css/app.css";
 // server-side rendered and with full no-JS support.
 import Swup from "swup";
 import SwupFormsPlugin from "@swup/forms-plugin";
+import SwupHeadPlugin from "@swup/head-plugin";
 import SwupPreloadPlugin from "@swup/preload-plugin";
 import SwupProgressPlugin from "@swup/progress-plugin";
 
 const swup = new Swup({
+  animationSelector: "[class*='swup-transition-']",
   plugins: [
     new SwupFormsPlugin(),
+    new SwupHeadPlugin({
+      persistAssets: true,
+      persistTags: "link[rel=stylesheet], link[rel=icon], script[src]",
+    }),
     new SwupPreloadPlugin(),
     new SwupProgressPlugin({ delay: 500 }),
   ],

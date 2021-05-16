@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link
       rel="preload"
@@ -10,10 +11,22 @@
       href="<%= Routes.static_path(@conn, "/css/app.css") %>"
     />
 
+    <link
+      rel="preload"
+      as="font"
+      href="<%= Routes.static_path(@conn, "/fonts/poppins-latin-400-normal.woff2") %>"
+      type="font/woff2"
+    />
+
     <title>
       RateTheDub<%= if assigns[:series], do: " - " <> @series.title %>
     </title>
     <meta name="og:title" content="RateTheDub<%= if assigns[:series], do: " - " <> @series.title %>" />
+
+    <script type="module">
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+    </script>
 
     <meta name="og:site_name" content="RateTheDub" />
     <meta name="og:type" content="website" />
@@ -60,11 +73,6 @@
       />
     <% end %>
 
-    <script type="module">
-      document.documentElement.classList.remove('no-js');
-      document.documentElement.classList.add('js');
-    </script>
-
     <link
       rel="stylesheet"
       href="<%= Routes.static_path(@conn, "/css/app.css") %>"
@@ -101,7 +109,7 @@
     class="h-screen w-screen overflow-x-hidden flex flex-col text-space-cadet dark:text-white bg-white dark:bg-space-cadet"
   >
     <noscript class="bg-fire-opal text-white text-bold text-center p-2">
-      Heads up! While we try to make RateTheDub work without JS, somethings may break!
+      <strong>Heads up!</strong> While we try to make RateTheDub work without JavaScript, some things may break!
     </noscript>
 
     <header
@@ -154,7 +162,7 @@
       </div>
     </header>
 
-    <main id="swup" role="main" class="container flex-grow mx-auto">
+    <main id="swup" class="swup-transition-fade container flex-grow mx-auto" tabindex="0">
       <%= if get_flash(@conn, :info) do %>
       <p class="text-bold text-center text-white bg-dark-olive my-4 mx-auto p-2 w-max max-w-full" role="alert">
         <%= get_flash(@conn, :info) %>
@@ -165,6 +173,7 @@
         <%= get_flash(@conn, :error) %>
       </p>
       <% end %>
+
       <%= @inner_content %>
     </main>
 

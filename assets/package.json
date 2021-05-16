@@ -14,6 +14,7 @@
   "dependencies": {
     "@fontsource/poppins": "^4.3.0",
     "@swup/forms-plugin": "^1.1.1",
+    "@swup/head-plugin": "^1.2.0",
     "@swup/preload-plugin": "^1.0.3",
     "@swup/progress-plugin": "^1.0.1",
     "phoenix": "file:../deps/phoenix",
