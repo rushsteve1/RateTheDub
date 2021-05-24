@@ -4,6 +4,7 @@ defmodule RateTheDubWeb.AnimeController do
   alias RateTheDub.Anime
   alias RateTheDub.Anime.VoiceActor
   alias RateTheDub.DubVotes
+  alias RateTheDub.DubVotes.Vote
 
   @six_months 15_778_800
   @cookie_name "snowflake"
@@ -24,19 +25,42 @@ defmodule RateTheDubWeb.AnimeController do
       if has_voted do
         put_flash(conn, :error, gettext("You've already voted for this"))
       else
-        DubVotes.create_vote(%{
+        {:ok, _} =
+          DubVotes.create_vote(%{
+            mal_id: id,
+            language: conn.assigns.locale,
+            user_ip: ip,
+            user_snowflake: snowflake
+          })
+
+        put_flash(conn, :vote, gettext("Vote Recorded"))
+      end
+
+    conn
+    |> put_resp_cookie(@cookie_name, snowflake, max_age: @six_months, encrypt: true)
+    |> render_series(id, ip, snowflake)
+  end
+
+  def undo(conn, %{"id" => id}) do
+    id = String.to_integer(id)
+    {ip, snowflake} = user_info(conn)
+    has_voted = DubVotes.has_voted_for(id, conn.assigns.locale, ip, snowflake)
+
+    if has_voted do
+      {:ok, _} =
+        DubVotes.delete_vote(%Vote{
           mal_id: id,
           language: conn.assigns.locale,
           user_ip: ip,
           user_snowflake: snowflake
         })
 
-        put_flash(conn, :info, gettext("Vote Recorded"))
-      end
-
-    conn
-    |> put_resp_cookie(@cookie_name, snowflake, max_age: @six_months, encrypt: true)
-    |> render_series(id, ip, snowflake)
+      put_flash(conn, :info, gettext("Vote Undone"))
+      |> render_series(id, ip, snowflake)
+    else
+      conn
+      |> render_series(id, ip, snowflake)
+    end
   end
 
   defp render_series(conn, id, ip, snowflake) when is_integer(id) do

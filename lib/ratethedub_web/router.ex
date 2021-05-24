@@ -56,6 +56,7 @@ defmodule RateTheDubWeb.Router do
 
     get "/anime/:id", PageController, :dummy
     post "/anime/:id", PageController, :dummy
+    delete "/anime/:id", PageController, :dummy
 
     get "/search", PageController, :dummy
   end
@@ -68,6 +69,7 @@ defmodule RateTheDubWeb.Router do
 
     get "/anime/:id", AnimeController, :show
     post "/anime/:id", AnimeController, :vote
+    delete "/anime/:id", AnimeController, :undo
 
     get "/search", SearchController, :index
   end

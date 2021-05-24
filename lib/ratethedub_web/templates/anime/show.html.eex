@@ -1,3 +1,14 @@
+<%= if get_flash(@conn, :vote) do %>
+  <p class="text-bold text-center text-white bg-dark-olive my-4 mx-auto p-2 w-max max-w-full" role="alert">
+    <%= get_flash(@conn, :vote) %>
+    <%= link gettext("Undo"),
+      to: Routes.anime_path(@conn, :undo, @locale, @series.mal_id),
+      method: :delete,
+      class: "bg-fire-opal p-1 rounded shadow"
+    %>
+  <p>
+<% end %>
+
 <article class="flex flex-col lg:flex-row items-center lg:mx-20 xl:mx-32">
   <section>
     <img src="<%= @series.poster_url %>" alt="<%= @series.title %> poster" />

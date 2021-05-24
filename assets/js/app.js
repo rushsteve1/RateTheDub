@@ -3,6 +3,11 @@
 // its own CSS file.
 import "../css/app.css";
 
+// We also need to import the fonts so that they are bundled properly
+// in all the weights that we want.
+import "@fontsource/poppins";
+import "@fontsource/poppins/700.css";
+
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
 // in "webpack.config.js".
@@ -12,7 +17,7 @@ import "../css/app.css";
 //     import {Socket} from "phoenix"
 //     import socket from "./socket"
 //
-// import "phoenix_html";
+import "phoenix_html";
 
 // Import Swup and its plugins which will be used to preload pages on hover and
 // to perform page transitions.
