@@ -64,7 +64,7 @@ USER nobody:nobody
 
 COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/ratethedub ./
 
-ADD entrypoint.sh ./
+ADD rel/entrypoint.sh ./
 
 ENV HOME=/app
 ENV MIX_ENV=prod
