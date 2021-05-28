@@ -5,7 +5,8 @@ defmodule RateTheDub.Anime.AnimeSeries do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias RateTheDub.Anime.VoiceActor
+  alias RateTheDub.DubVotes.Vote
+  alias RateTheDub.Characters.Character
 
   @primary_key false
   @derive {Jason.Encoder, except: [:__meta__, :votes]}
@@ -18,10 +19,15 @@ defmodule RateTheDub.Anime.AnimeSeries do
     field :title, :string
     field :title_tr, :map
 
-    embeds_many :voice_actors, VoiceActor
+    has_many :characters, Character,
+      foreign_key: :anime_id,
+      references: :mal_id
 
-    has_many :votes,
-             RateTheDub.DubVotes.Vote,
+    has_many :actors,
+      references: :actor_id,
+      through: [:characters, :actor]
+
+    has_many :votes, Vote,
              foreign_key: :mal_id,
              references: :mal_id
 
