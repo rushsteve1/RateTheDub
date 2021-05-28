@@ -4,7 +4,7 @@
 ###
 ### First Stage - Building the Release
 ###
-FROM elixir:alpine AS build
+FROM elixir:1.12.0-alpine AS build
 
 # install build dependencies
 RUN apk add --no-cache build-base npm
