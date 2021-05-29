@@ -62,7 +62,7 @@ defmodule RateTheDub.Jikan do
   intentionally limits to only "Main" characters and a limit set by
   `@characters_taken`.
   """
-  @spec get_characters_json!(id :: integer) :: map
+  @spec get_characters_json!(id :: integer) :: [map]
   def get_characters_json!(id) when is_integer(id) do
     get!("/anime/#{id}/characters_staff", opts: [cache: false])
     |> Map.get(:body)
@@ -110,7 +110,7 @@ defmodule RateTheDub.Jikan do
     }
   end
 
-  @spec jikan_to_characters(char_json :: map) :: [%Character{}]
+  @spec jikan_to_characters(char_json :: [map]) :: [%Character{}]
   defp jikan_to_characters(char_json) do
     char_json
     |> Enum.map(fn c ->
@@ -123,7 +123,7 @@ defmodule RateTheDub.Jikan do
     end)
   end
 
-  @spec jikan_to_voice_actors(char_json :: map) :: {[%Actor{}], [Keyword.t()]}
+  @spec jikan_to_voice_actors(char_json :: [map]) :: {[%Actor{}], [Keyword.t()]}
   defp jikan_to_voice_actors(char_json) do
     char_json
     |> Stream.flat_map(&chara_to_voice_actors/1)

@@ -36,7 +36,7 @@ defmodule RateTheDub.VoiceActorsTest do
 
     test "get_actor!/1 returns the actor with given id" do
       actor = actor_fixture()
-      assert VoiceActors.get_actor!(actor.id) == actor
+      assert VoiceActors.get_actor!(actor.mal_id) == actor
     end
 
     test "create_actor/1 with valid data creates a actor" do
@@ -63,13 +63,13 @@ defmodule RateTheDub.VoiceActorsTest do
     test "update_actor/2 with invalid data returns error changeset" do
       actor = actor_fixture()
       assert {:error, %Ecto.Changeset{}} = VoiceActors.update_actor(actor, @invalid_attrs)
-      assert actor == VoiceActors.get_actor!(actor.id)
+      assert actor == VoiceActors.get_actor!(actor.mal_id)
     end
 
     test "delete_actor/1 deletes the actor" do
       actor = actor_fixture()
       assert {:ok, %Actor{}} = VoiceActors.delete_actor(actor)
-      assert_raise Ecto.NoResultsError, fn -> VoiceActors.get_actor!(actor.id) end
+      assert_raise Ecto.NoResultsError, fn -> VoiceActors.get_actor!(actor.mal_id) end
     end
 
     test "change_actor/1 returns a actor changeset" do

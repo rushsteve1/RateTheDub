@@ -6,9 +6,13 @@ defmodule RateTheDub.CharactersTest do
   describe "characters" do
     alias RateTheDub.Characters.Character
 
-    @valid_attrs %{name: "some name", picture_url: "some picture_url"}
-    @update_attrs %{name: "some updated name", picture_url: "some updated picture_url"}
-    @invalid_attrs %{name: nil, picture_url: nil}
+    @valid_attrs %{mal_id: 42, name: "some name", picture_url: "some picture_url"}
+    @update_attrs %{
+      mal_id: 43,
+      name: "some updated name",
+      picture_url: "some updated picture_url"
+    }
+    @invalid_attrs %{mal_id: nil, name: nil, picture_url: nil}
 
     def character_fixture(attrs \\ %{}) do
       {:ok, character} =
@@ -26,7 +30,7 @@ defmodule RateTheDub.CharactersTest do
 
     test "get_character!/1 returns the character with given id" do
       character = character_fixture()
-      assert Characters.get_character!(character.id) == character
+      assert Characters.get_character!(character.mal_id) == character
     end
 
     test "create_character/1 with valid data creates a character" do
@@ -52,13 +56,13 @@ defmodule RateTheDub.CharactersTest do
     test "update_character/2 with invalid data returns error changeset" do
       character = character_fixture()
       assert {:error, %Ecto.Changeset{}} = Characters.update_character(character, @invalid_attrs)
-      assert character == Characters.get_character!(character.id)
+      assert character == Characters.get_character!(character.mal_id)
     end
 
     test "delete_character/1 deletes the character" do
       character = character_fixture()
       assert {:ok, %Character{}} = Characters.delete_character(character)
-      assert_raise Ecto.NoResultsError, fn -> Characters.get_character!(character.id) end
+      assert_raise Ecto.NoResultsError, fn -> Characters.get_character!(character.mal_id) end
     end
 
     test "change_character/1 returns a character changeset" do
