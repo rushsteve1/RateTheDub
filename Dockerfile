@@ -54,7 +54,7 @@ RUN mix do compile, release
 # prepare release docker image
 FROM alpine AS app
 
-RUN apk add --no-cache openssl ncurses-libs
+RUN apk add --no-cache openssl ncurses-libs libgcc libstdc++
 
 WORKDIR /app
 
