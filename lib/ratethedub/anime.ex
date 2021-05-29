@@ -71,15 +71,41 @@ defmodule RateTheDub.Anime do
     case Repo.get_by(AnimeSeries, mal_id: id) do
       %AnimeSeries{} = series ->
         series
+        |> Repo.preload(:characters)
 
       nil ->
-        id
-        |> RateTheDub.Jikan.get_series!()
-        |> Repo.insert!(on_conflict: :replace_all, conflict_target: :mal_id)
+        insert_anime_series_from_jikan(id)
+        |> Repo.preload(:characters)
 
       _ ->
         raise Ecto.NoResultsError, queryable: AnimeSeries
     end
+  end
+
+  defp insert_anime_series_from_jikan(id) do
+    {series, characters, actors, relations} = RateTheDub.Jikan.get_series_everything!(id)
+
+    {:ok, series} =
+      Repo.transaction(fn ->
+        # Save the series so it can be returned later
+        # Has to come first due to FK constraints
+        series = Repo.insert!(series, on_conflict: :nothing)
+
+        characters
+        |> Stream.each(&Repo.insert!(&1, on_conflict: :nothing))
+        # Insert relation to current series
+        |> Enum.map(&[anime_id: id, character_id: &1.mal_id])
+        |> then(&Repo.insert_all("anime_characters", &1, on_conflict: :nothing))
+
+        actors
+        |> Enum.each(&Repo.insert!(&1, on_conflict: :nothing))
+
+        Repo.insert_all("character_actors", relations, on_conflict: :nothing)
+
+        series
+      end)
+
+    series
   end
 
   @doc """
@@ -244,5 +270,13 @@ defmodule RateTheDub.Anime do
   """
   def change_anime_series(%AnimeSeries{} = anime_series, attrs \\ %{}) do
     AnimeSeries.changeset(anime_series, attrs)
+  end
+
+  def character_actor_pairs_for_lang(%AnimeSeries{} = series, lang) do
+    series
+    |> Repo.preload(:characters)
+    |> Map.get(:characters)
+    |> Stream.map(&{&1, RateTheDub.VoiceActors.actor_for_character_with_lang(&1.mal_id, lang)})
+    |> Enum.filter(fn {c, a} -> c && a end)
   end
 end

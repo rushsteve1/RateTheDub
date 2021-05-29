@@ -2,7 +2,6 @@ defmodule RateTheDubWeb.AnimeController do
   use RateTheDubWeb, :controller
 
   alias RateTheDub.Anime
-  alias RateTheDub.Anime.VoiceActor
   alias RateTheDub.DubVotes
   alias RateTheDub.DubVotes.Vote
 
@@ -65,17 +64,13 @@ defmodule RateTheDubWeb.AnimeController do
 
   defp render_series(conn, id, ip, snowflake) when is_integer(id) do
     series = Anime.get_or_create_anime_series!(id)
-    count = DubVotes.count_votes_for(id, conn.assigns.locale)
-    all_counts = DubVotes.count_all_votes_for(id)
-    actors = VoiceActor.get_actors_by_lang(series, conn.assigns.locale)
-    has_voted = DubVotes.has_voted_for(id, conn.assigns.locale, ip, snowflake)
 
     render(conn, "show.html",
-      has_voted: has_voted,
       series: series,
-      count: count,
-      all_counts: all_counts,
-      actors: actors
+      count: DubVotes.count_votes_for(id, conn.assigns.locale),
+      all_counts: DubVotes.count_all_votes_for(id),
+      char_actors: Anime.character_actor_pairs_for_lang(series, conn.assigns.locale),
+      has_voted: DubVotes.has_voted_for(id, conn.assigns.locale, ip, snowflake)
     )
   end
 
