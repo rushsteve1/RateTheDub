@@ -1,4 +1,12 @@
 defmodule RateTheDub.Characters.Character do
+  @moduledoc """
+  A character from one (or many) anime series.
+
+  This table is many-to-many related to `AnimeSeries` with the
+  `anime_characters` table, and also many-to-many related to `Actor` with the
+  `character_actors` table.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias RateTheDub.Anime.AnimeSeries

@@ -1,4 +1,11 @@
 defmodule RateTheDub.VoiceActors.Actor do
+  @moduledoc """
+  An actor who voiced characters in one or more anime.
+
+  This table is many-to-many related to `Character` with the `character_actors`
+  table.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias RateTheDub.Characters.Character
