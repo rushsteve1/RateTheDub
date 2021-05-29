@@ -41,7 +41,10 @@ defmodule RateTheDub.CharactersTest do
 
     test "update_character/2 with valid data updates the character" do
       character = character_fixture()
-      assert {:ok, %Character{} = character} = Characters.update_character(character, @update_attrs)
+
+      assert {:ok, %Character{} = character} =
+               Characters.update_character(character, @update_attrs)
+
       assert character.name == "some updated name"
       assert character.picture_url == "some updated picture_url"
     end

@@ -6,8 +6,18 @@ defmodule RateTheDub.VoiceActorsTest do
   describe "actors" do
     alias RateTheDub.VoiceActors.Actor
 
-    @valid_attrs %{language: "some language", mal_id: 42, name: "some name", picture_url: "some picture_url"}
-    @update_attrs %{language: "some updated language", mal_id: 43, name: "some updated name", picture_url: "some updated picture_url"}
+    @valid_attrs %{
+      language: "some language",
+      mal_id: 42,
+      name: "some name",
+      picture_url: "some picture_url"
+    }
+    @update_attrs %{
+      language: "some updated language",
+      mal_id: 43,
+      name: "some updated name",
+      picture_url: "some updated picture_url"
+    }
     @invalid_attrs %{language: nil, mal_id: nil, name: nil, picture_url: nil}
 
     def actor_fixture(attrs \\ %{}) do

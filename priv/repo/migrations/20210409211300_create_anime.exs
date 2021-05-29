@@ -11,6 +11,7 @@ defmodule RateTheDub.Repo.Migrations.CreateAnime do
       add :streaming, :map, default: %{}
       add :featured_in, :string
       add :voice_actors, :map
+      add :url, :string
 
       timestamps()
     end

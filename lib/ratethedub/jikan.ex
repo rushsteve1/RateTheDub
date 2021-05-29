@@ -6,11 +6,13 @@ defmodule RateTheDub.Jikan do
   JIkan too hard. This will also make RateTheDub faster too!
   """
 
+  @character_role "Main"
   @characters_taken 5
 
   use Tesla
   alias RateTheDub.Anime.AnimeSeries
-  alias RateTheDub.Anime.VoiceActor
+  alias RateTheDub.Characters.Character
+  alias RateTheDub.VoiceActors.Actor
 
   plug Tesla.Middleware.BaseUrl, "https://api.jikan.moe/v3"
   plug Tesla.Middleware.Timeout, timeout: 2_000
@@ -32,6 +34,7 @@ defmodule RateTheDub.Jikan do
   """
   @spec search!(terms :: String.t()) :: [map]
   def search!(""), do: []
+  def search!(nil), do: []
 
   def search!(terms) when is_binary(terms) do
     terms = terms |> String.trim() |> String.downcase()
@@ -43,7 +46,8 @@ defmodule RateTheDub.Jikan do
   end
 
   @doc """
-  Returns the JSON data of an Anime Series from Jikan parsed into Elixir
+  Returns the JSON data of an Anime Series from Jikan parsed into Elixir but not
+  yet into known structures.
   """
   @spec get_series_json!(id :: integer) :: map
   def get_series_json!(id) when is_integer(id) do
@@ -51,51 +55,94 @@ defmodule RateTheDub.Jikan do
   end
 
   @doc """
-  Returns an Anime Series from Jikan parsed into an `AnimeSeries` struct based
-  on it's MAL Id.
+  Returns the JSON data of the characters associated with an Anime Series from Jikan.
+  From this the voice actor information will be pulled out.
 
-  ## Examples
-
-      iex> get_series!(1)
-      %AnimeSeries{}
-
+  In order to properly respect Jikan and MAL's terms of service this function
+  intentionally limits to only "Main" characters and a limit set by
+  `@characters_taken`.
   """
-  @spec get_series!(id :: integer) :: %AnimeSeries{}
-  def get_series!(id) do
-    # TODO make sure that if any aspect of this fails the whole thing fails
-
-    actors =
-      id
-      |> get_series_staff!()
-      |> staff_to_voice_actors()
-
-    langs =
-      actors
-      |> actors_to_languages()
-
-    id
-    |> get_series_json!()
-    |> jikan_to_series()
-    |> Map.put(:voice_actors, actors)
-    |> Map.put(:dubbed_in, langs)
+  @spec get_characters_json!(id :: integer) :: map
+  def get_characters_json!(id) when is_integer(id) do
+    get!("/anime/#{id}/characters_staff", opts: [cache: false])
+    |> Map.get(:body)
+    |> Map.get("characters")
+    |> Stream.filter(&(&1["role"] == @character_role))
+    |> Enum.take(@characters_taken)
   end
 
   @doc """
-  Returns the JSON data of the staff associated with an Anime Series from Jikan.
+  Returns all the information for the series with the given MAL ID, this
+  function is the primary output of this entire module.
+  This returns a tuple of the series, characters, actors, and the relations
+  between the characters and actors.
   """
-  @spec get_series_staff!(id :: integer) :: map
-  def get_series_staff!(id) when is_integer(id) do
-    get!("/anime/#{id}/characters_staff", opts: [cache: false]).body
+  @spec get_series_everything!(id :: integer) ::
+          {%AnimeSeries{}, [%Character{}], [%Actor{}], [Keyword.t()]}
+  def get_series_everything!(id) when is_integer(id) do
+    char_json = get_characters_json!(id)
+
+    characters = jikan_to_characters(char_json)
+    {actors, relations} = jikan_to_voice_actors(char_json)
+    langs = actors_to_languages(actors)
+
+    series =
+      get_series_json!(id)
+      |> jikan_to_series(langs)
+
+    {series, characters, actors, relations}
   end
 
-  @spec staff_to_voice_actors(staff :: map) :: [%VoiceActor{}]
-  defp staff_to_voice_actors(staff) do
-    staff
-    |> Map.get("characters")
-    |> Enum.take(@characters_taken)
-    |> Stream.flat_map(&chara_to_voice_actors/1)
-    |> Enum.map(&jikan_to_voice_actor/1)
+  # Private data transformation functions
+
+  @spec jikan_to_series(series :: map, langs :: [String.t()]) :: %AnimeSeries{}
+  defp jikan_to_series(series, langs \\ []) do
+    %AnimeSeries{
+      mal_id: series["mal_id"],
+      title: series["title"],
+      # TODO get translated titles
+      title_tr: %{},
+      poster_url: series["image_url"],
+      streaming: %{},
+      featured_in: nil,
+      dubbed_in: langs,
+      url: series["url"]
+    }
   end
+
+  @spec jikan_to_characters(char_json :: map) :: [%Character{}]
+  defp jikan_to_characters(char_json) do
+    char_json
+    |> Enum.map(fn c ->
+      %Character{
+        mal_id: c["mal_id"],
+        name: c["name"],
+        picture_url: c["image_url"],
+        url: c["url"]
+      }
+    end)
+  end
+
+  @spec jikan_to_voice_actors(char_json :: map) :: {[%Actor{}], [Keyword.t()]}
+  defp jikan_to_voice_actors(char_json) do
+    char_json
+    |> Stream.flat_map(&chara_to_voice_actors/1)
+    |> Enum.map(fn {c, a} ->
+      {
+        %Actor{
+          mal_id: a["mal_id"],
+          picture_url: a["image_url"],
+          name: a["name"],
+          language: RateTheDub.Locale.en_name_to_code(a["language"]),
+          url: a["url"]
+        },
+        [character_id: c, actor_id: a["mal_id"]]
+      }
+    end)
+    |> Enum.unzip()
+  end
+
+  # Helper functions
 
   @spec chara_to_voice_actors(chara :: map) :: [map]
   defp chara_to_voice_actors(chara) do
@@ -106,8 +153,7 @@ defmodule RateTheDub.Jikan do
       &chunk_by_language/2,
       &{:cont, &1}
     )
-    |> Stream.map(&List.first/1)
-    |> Enum.map(&Map.put(&1, "character", chara["name"]))
+    |> Enum.map(&{chara["mal_id"], List.first(&1)})
   end
 
   defp chunk_by_language(a, []), do: {:cont, [a]}
@@ -121,35 +167,10 @@ defmodule RateTheDub.Jikan do
     end
   end
 
-  @spec actors_to_languages(actors :: [%VoiceActor{}]) :: [String.t()]
+  @spec actors_to_languages(actors :: [%Actor{}]) :: [String.t()]
   defp actors_to_languages(actors) do
     actors
     |> Stream.map(&Map.get(&1, :language))
     |> Enum.uniq()
-  end
-
-  @spec jikan_to_series(series :: map) :: %AnimeSeries{}
-  defp jikan_to_series(series) do
-    %AnimeSeries{
-      mal_id: series["mal_id"],
-      title: series["title"],
-      # TODO get translated titles
-      title_tr: %{},
-      poster_url: series["image_url"],
-      streaming: %{},
-      featured_in: nil,
-      dubbed_in: []
-    }
-  end
-
-  @spec jikan_to_voice_actor(actor :: map) :: %VoiceActor{}
-  defp jikan_to_voice_actor(actor) do
-    %VoiceActor{
-      mal_id: actor["mal_id"],
-      picture_url: actor["image_url"],
-      name: actor["name"],
-      language: RateTheDub.Locale.en_name_to_code(actor["language"]),
-      character: actor["character"]
-    }
   end
 end

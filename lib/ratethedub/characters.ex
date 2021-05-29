@@ -35,7 +35,7 @@ defmodule RateTheDub.Characters do
       ** (Ecto.NoResultsError)
 
   """
-  def get_character!(id), do: Repo.get!(Character, id)
+  def get_character!(id), do: Repo.get_by!(Character, mal_id: id)
 
   @doc """
   Creates a character.

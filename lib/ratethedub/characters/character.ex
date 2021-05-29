@@ -6,18 +6,18 @@ defmodule RateTheDub.Characters.Character do
 
   @primary_key false
   schema "characters" do
-    field :name, :string, primary_key: true
+    field :mal_id, :integer, primary_key: true
+    field :name, :string
     field :picture_url, :string
-    field :anime_id, :id, primary_key: true
-    field :actor_id, :id, primary_key: true
+    field :url, :string
 
-    has_one :anime, AnimeSeries,
-      foreign_key: :mal_id,
-      references: :anime_id
+    many_to_many :anime, AnimeSeries,
+      join_through: "anime_characters",
+      join_keys: [character_id: :mal_id, anime_id: :mal_id]
 
-    has_one :actor, Actor,
-      foreign_key: :mal_id,
-      references: :actor_id
+    many_to_many :actors, Actor,
+      join_through: "character_actors",
+      join_keys: [character_id: :mal_id, actor_id: :mal_id]
 
     timestamps()
   end
@@ -25,7 +25,7 @@ defmodule RateTheDub.Characters.Character do
   @doc false
   def changeset(character, attrs) do
     character
-    |> cast(attrs, [:name, :picture_url, :anime_id, :actor_id])
-    |> validate_required([:name, :anime_id, :actor_id])
+    |> cast(attrs, [:mal_id, :name, :picture_url, :url])
+    |> validate_required([:mal_id, :name])
   end
 end

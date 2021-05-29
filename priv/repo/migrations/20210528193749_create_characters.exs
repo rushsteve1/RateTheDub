@@ -3,16 +3,37 @@ defmodule RateTheDub.Repo.Migrations.CreateCharacters do
 
   def change do
     create table(:characters) do
-      add :name, :string, primary_key: true
+      add :mal_id, :integer, primary_key: true
+      add :name, :string
       add :picture_url, :string
-      add :anime_id, references(:anime, on_delete: :nothing), primary_key: true
-      add :actor_id, references(:actors, on_delete: :nothing), primary_key: true
+      add :url, :string
 
       timestamps()
     end
 
-    create unique_index(:characters, [:name, :anime_id, :actor_id])
-    create index(:characters, [:anime_id])
-    create index(:characters, [:actor_id])
+    create unique_index(:characters, [:mal_id])
+    create index(:characters, [:name])
+
+    create table(:character_actors) do
+      add :actor_id, references(:actors, column: :mal_id, on_delete: :nothing), primary_key: true
+
+      add :character_id, references(:characters, column: :mal_id, on_delete: :nothing),
+        primary_key: true
+    end
+
+    create unique_index(:character_actors, [:actor_id, :character_id])
+    create index(:character_actors, [:actor_id])
+    create index(:character_actors, [:character_id])
+
+    create table(:anime_characters) do
+      add :anime_id, references(:anime, column: :mal_id, on_delete: :nothing), primary_key: true
+
+      add :character_id, references(:characters, column: :mal_id, on_delete: :nothing),
+        primary_key: true
+    end
+
+    create unique_index(:anime_characters, [:anime_id, :character_id])
+    create index(:anime_characters, [:anime_id])
+    create index(:anime_characters, [:character_id])
   end
 end

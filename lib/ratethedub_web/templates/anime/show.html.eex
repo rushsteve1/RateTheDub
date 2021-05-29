@@ -14,7 +14,7 @@
     <img src="<%= @series.poster_url %>" alt="<%= @series.title %> poster" />
 
     <a
-      href="<%= RateTheDub.Anime.AnimeSeries.to_url @series %>"
+      href="<%= @series.url %>"
       target="_blank"
       class="block text-center p-2 bg-independence text-white font-bold rounded-sm shadow hover:shadow-md"
     >
@@ -101,6 +101,7 @@
         </table>
       </div>
 
+      <%= if @locale in @series.dubbed_in do %>
       <div>
         <h3 class="text-xl">
           <%= RateTheDub.Locale.locale_own_name @locale %>
@@ -114,23 +115,24 @@
             </tr>
           </thead>
           <tbody>
-            <%= for actor <- @actors do %>
+            <%= for {char, actor} <- @char_actors do %>
               <tr>
                 <td>
-                  <%= link actor.name, to: RateTheDub.Anime.VoiceActor.to_url(actor), target: "_blank" %>
+                  <%= link actor.name, to: actor.url, target: "_blank" %>
                 </td>
-                <td><%= actor.character %></td>
+                <td><%= link char.name, to: char.url, target: "_blank" %></td>
               </tr>
             <% end %>
           </tbody>
         </table>
 
         <a
-          href="<%= RateTheDub.Anime.AnimeSeries.to_url @series %>characters"
+          href="<%= @series.url %>/characters"
           target="_blank"
           >View the Rest</a
         >
       </div>
+      <% end %>
     </div>
   </section>
 </article>

@@ -18,18 +18,15 @@ defmodule RateTheDub.Anime.AnimeSeries do
     field :streaming, :map
     field :title, :string
     field :title_tr, :map
+    field :url, :string
 
-    has_many :characters, Character,
-      foreign_key: :anime_id,
-      references: :mal_id
-
-    has_many :actors,
-      references: :actor_id,
-      through: [:characters, :actor]
+    many_to_many :characters, Character,
+      join_through: "anime_characters",
+      join_keys: [anime_id: :mal_id, character_id: :mal_id]
 
     has_many :votes, Vote,
-             foreign_key: :mal_id,
-             references: :mal_id
+      foreign_key: :mal_id,
+      references: :mal_id
 
     timestamps()
   end
@@ -45,10 +42,7 @@ defmodule RateTheDub.Anime.AnimeSeries do
       :streaming,
       :featured_in
     ])
-    |> cast_embed(:voice_actors)
     |> validate_required([:mal_id, :title, :dubbed_in])
     |> unique_constraint(:title)
   end
-
-  def to_url(%__MODULE__{mal_id: id}), do: "https://myanimelist.net/anime/#{id}/"
 end

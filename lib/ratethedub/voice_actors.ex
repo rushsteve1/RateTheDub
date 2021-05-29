@@ -35,7 +35,7 @@ defmodule RateTheDub.VoiceActors do
       ** (Ecto.NoResultsError)
 
   """
-  def get_actor!(id), do: Repo.get!(Actor, id)
+  def get_actor!(id), do: Repo.get_by!(Actor, mal_id: id)
 
   @doc """
   Creates a actor.
@@ -100,5 +100,14 @@ defmodule RateTheDub.VoiceActors do
   """
   def change_actor(%Actor{} = actor, attrs \\ %{}) do
     Actor.changeset(actor, attrs)
+  end
+
+  def actor_for_character_with_lang(chara_id, lang) do
+    Actor
+    |> join(:inner, [a], c in "character_actors", on: a.mal_id == c.actor_id)
+    |> where([a, c], c.character_id == ^chara_id)
+    |> where([a, c], a.language == ^lang)
+    |> first
+    |> Repo.one()
   end
 end
