@@ -35,7 +35,7 @@ defmodule RateTheDubWeb.GoatcounterPlug do
       }
 
       post!("/count", data,
-        headers: [{"content-type", "application/json"}, {"authorization", "Bearer #{token()}"}]
+        headers: [{"Content-Type", "application/json"}, {"Authorization", "Bearer #{token()}"}]
       )
     end
 
