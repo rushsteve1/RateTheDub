@@ -15,7 +15,7 @@ defmodule RateTheDubWeb.GoatcounterPlug do
   plug Tesla.Middleware.BaseUrl, "#{@sitename}.goatcounter.com/api/v0"
   plug Tesla.Middleware.FollowRedirects
   plug Tesla.Middleware.Logger, debug: false
-  plug Tesla.Middleware.Json
+  plug Tesla.Middleware.JSON
 
   @impl true
   def init(opts), do: opts
