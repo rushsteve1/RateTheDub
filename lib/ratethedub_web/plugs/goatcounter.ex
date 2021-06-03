@@ -22,7 +22,7 @@ defmodule RateTheDubWeb.GoatcounterPlug do
 
   @impl true
   def call(conn, _opts) do
-    if token() && RateTheDubWeb.PublicIpPlug.is_public_ip(conn.remote_ip) do
+    if token() do
       data = %{
         hits: [
           %{

@@ -47,6 +47,7 @@ defmodule RateTheDub.MixProject do
       {:set_locale, "~> 0.2"},
       {:hackney, "~> 1.17"},
       {:tesla, "~> 1.4.0"},
+      {:remote_ip, "~> 1.0"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
