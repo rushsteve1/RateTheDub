@@ -1,4 +1,4 @@
-# fly.toml file generated for ratethedub on 2021-05-03T17:43:12-04:00
+# fly.toml file generated for ratethedub on 2021-06-02T20:11:50-04:00
 
 app = "ratethedub"
 
@@ -7,13 +7,22 @@ kill_timeout = 5
 
 [env]
 
+[deploy]
+  release_command = "/app/bin/ratethedub eval RateTheDub.Release.migrate"
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
 [[services]]
   internal_port = 4000
   protocol = "tcp"
+  script_checks = []
 
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
+    type = "connections"
 
   [[services.ports]]
     handlers = ["http"]
@@ -36,5 +45,4 @@ kill_timeout = 5
     timeout = "2s"
     method = "get"
     path = "/en/"
-    protocol = "https"
-    tls_skip_verify = false
+    protocol = "http"

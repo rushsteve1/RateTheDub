@@ -13,33 +13,29 @@ defmodule RateTheDub.Release do
   @app :ratethedub
 
   @doc """
-
+  Perform all the migrations, mostly used in releases on the production server
   """
-  def migrate() do
+  def migrate do
     load_app()
 
-    # Run the migrations one by one
     for repo <- repos() do
       {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :up, all: true))
     end
   end
 
   @doc """
-  Roll back the database to a specific version
+  Roll back to a previous migration number
   """
   def rollback(repo, version) do
     load_app()
-
     {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :down, to: version))
   end
 
-  # Get the repos from the config
   defp repos do
     Application.fetch_env!(@app, :ecto_repos)
   end
 
-  # Ensure the app is loaded
-  defp load_app() do
+  defp load_app do
     Application.load(@app)
   end
 end

@@ -4,13 +4,16 @@
 ###
 ### First Stage - Building the Release
 ###
-FROM elixir:1.12.0-alpine AS build
+FROM hexpm/elixir:1.12.1-erlang-24.0.2-alpine-3.13.3 AS build
 
 # install build dependencies
 RUN apk add --no-cache build-base npm
 
 # prepare build dir
 WORKDIR /app
+
+# prevent hex timeout
+ENV HEX_HTTP_TIMEOUT=20
 
 # install hex + rebar
 RUN mix local.hex --force && \
@@ -54,22 +57,22 @@ RUN mix do compile, release
 # prepare release docker image
 FROM alpine AS app
 
-RUN apk add --no-cache openssl ncurses-libs libgcc libstdc++
+RUN apk add --no-cache openssl ncurses-libs libstdc++
 
 WORKDIR /app
 
+# Drop permissions
 RUN chown nobody:nobody /app
 
 USER nobody:nobody
 
 COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/ratethedub ./
 
-ADD rel/entrypoint.sh ./
-
+# Set env variables for basic config
 ENV HOME=/app
 ENV MIX_ENV=prod
 ENV SECRET_KEY_BASE=nokey
 ENV PORT=4000
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+EXPOSE 4000
 CMD ["bin/ratethedub", "start"]
