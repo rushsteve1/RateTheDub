@@ -12,7 +12,7 @@ defmodule RateTheDubWeb.GoatcounterPlug do
 
   use Tesla
 
-  plug Tesla.Middleware.BaseUrl, "#{@sitename}.goatcounter.com/api/v0"
+  plug Tesla.Middleware.BaseUrl, "https://#{@sitename}.goatcounter.com/api/v0"
   plug Tesla.Middleware.FollowRedirects
   plug Tesla.Middleware.Logger, debug: false
   plug Tesla.Middleware.JSON

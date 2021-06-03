@@ -2,29 +2,38 @@ defmodule RateTheDubWeb.Router do
   use RateTheDubWeb, :router
 
   pipeline :browser do
+    plug RemoteIp,
+      headers: ["fly-client-ip"]
+
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
 
-    plug RemoteIp
-
     plug SetLocale,
       gettext: RateTheDubWeb.Gettext,
       default_locale: "en"
 
-    plug RateTheDubWeb.GoatcounterPlug
+    # plug RateTheDubWeb.GoatcounterPlug
   end
 
   pipeline :api do
+    plug RemoteIp,
+      headers: ["fly-client-ip"]
+
     plug :accepts, ["json", "application/vnd.api+json"]
+
+    # plug RateTheDubWeb.GoatcounterPlug
   end
 
   pipeline :sitemap do
+    plug RemoteIp,
+      headers: ["fly-client-ip"]
+
     plug :accepts, ["xml"]
-    plug RemoteIp
-    plug RateTheDubWeb.GoatcounterPlug
+
+    # plug RateTheDubWeb.GoatcounterPlug
   end
 
   # Due to conflicts with the locale redirection system this must come before

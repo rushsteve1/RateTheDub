@@ -46,3 +46,5 @@ kill_timeout = 5
     method = "get"
     path = "/en/"
     protocol = "http"
+
+# TODO Static asset hosting, currently seems to break deployment
