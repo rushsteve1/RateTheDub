@@ -1,17 +1,52 @@
 <article>
-  <h1><%= gettext "About" %></h1>
+  <h1 class="text-4xl"><%= gettext "About" %></h1>
+  <p>
+    RateTheDub is a site where you can view and vote on whether or not the dub for
+    various anime series was any good. The goal is to eliminate the random searching
+    and digging through old forum posts that is currently required to figure out if
+    a dub is any good.
+  </p>
+  <p>
+    It was born out of the author's own frustration with needing to browse
+    random old forum posts just to figure out if the dub for an anime was any
+    good.
+  </p>
 
-  <p>Words go here that are about this site</p>
+  <p>
+    <blockquote class="italic text-opacity-50">"But subs are better than dubs!"</blockquote>
+    you might say, and is the usual argument against dubs and anything related
+    to them.
+    Well not everyone can read subs, the visually impaired or children. And in
+    some languages the dubs actually are better (or more well liked) than the
+    subtitles.
+  </p>
 
-  <h2 id="contact"><%= gettext "Contact" %></h2>
-  <p></p>
+  <p>
+    This project is open source and written in Elixir.
+    <a href="https://github.com/rushsteve1/RateTheDub">Come help us out on GitHub!</a>
+  </p>
 
-  <h2 id="feedback"><%= gettext "Feedback" %></h2>
-  <p></p>
+  <h2 class="text-3xl" id="contact"><%= gettext "Contact" %></h2>
+  <p>
+    You can send us an email at <a href="mailto:contact@ratethedub.com">contact@ratethedub.com</a>
+  </p>
 
-  <h3><%= gettext "Database Changes" %></h3>
-  <p></p>
+  <h2 class="text-3xl" id="feedback"><%= gettext "Feedback" %></h2>
+  <p>
+    We're working on a system for feedback/comments on individual series. For
+    now all general feedback should be directed to the email address above.
+  </p>
 
-  <h2 id="donate"><%= gettext "Donate" %></h2>
-  <p></p>
+  <h3 class="text-2xl"><%= gettext "Database Changes" %></h3>
+  <p>
+    We're working on a system where you can point out issues and request changes
+    with out date (missing languages, wrong title, etc.) so we'll update this
+    section soon!
+  </p>
+
+  <h2 class="text-3xl" id="donate"><%= gettext "Donate" %></h2>
+  <p>
+    Holding off on this until we're at least out of Beta and have something that
+    we'd feel proud of enough.
+  </p>
 </article>
