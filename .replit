@@ -1,0 +1,2 @@
+language = "elixir"
+run = "iex -S mix"

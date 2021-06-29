@@ -1,4 +1,4 @@
 <div class="text-center">
   <h1 class="text-6xl text-opacity-50">Ouch!</h1>
-  <h2 class="text-4xl">500 Error</h2>
+  <h2 class="text-4xl">500 Internal Server Error</h2>
 </div>
