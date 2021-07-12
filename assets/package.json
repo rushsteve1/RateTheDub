@@ -12,7 +12,7 @@
     "format": "prettier --write . --color --ignore-path ../.gitignore --loglevel warn"
   },
   "dependencies": {
-    "@fontsource/poppins": "^4.4.5",
+    "@fontsource/poppins": "^4.5.0",
     "@swup/forms-plugin": "^1.1.1",
     "@swup/head-plugin": "^1.2.0",
     "@swup/preload-plugin": "^1.0.3",
