@@ -22,7 +22,7 @@
     "swup": "^2.0.14"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
+    "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.0",
     "autoprefixer": "^10.3.3",
     "babel-loader": "^8.2.2",
